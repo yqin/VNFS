@@ -1,0 +1,36 @@
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%post
+    # Variables
+    export CUDA_VER=10.0.130
+    export KERNEL_VER=3.10.0-957.1.3
+    export KERNEL_OS=el7
+    export ARCH=x86_64
+
+    # CUDA
+    cd /tmp
+    wget -c https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
+    yum -ty install \
+            /tmp/cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
+    yum -y  update
+    yum -ty install \
+            cuda-drivers
+
+    # Build CUDA Driver
+    dkms autoinstall -k ${KERNEL_VER}.${KERNEL_OS}.${ARCH}
+    rm -rf /var/lib/dkms/nvidia
+
+%post
+    # Yum
+    yum clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow

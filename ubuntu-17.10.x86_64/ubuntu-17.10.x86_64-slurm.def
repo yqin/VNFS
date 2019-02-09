@@ -1,0 +1,49 @@
+%files
+    /etc/warewulf/ubuntu-17.10/passwd /etc
+    /etc/warewulf/ubuntu-17.10/shadow /etc
+    /etc/warewulf/ubuntu-17.10/group /etc
+    /etc/warewulf/ubuntu-17.10/gshadow /etc
+
+%files
+    /global/software/ubuntu-17.10/sources/slurm-17.11.5.tar.bz2 /tmp
+    /etc/warewulf/ubuntu-17.10/slurmd.service /lib/systemd/system
+
+%post
+    # Dependencies
+    apt-get -y install \
+            libmunge2 \
+            libmunge-dev \
+            munge
+
+    # Slurm
+    export SLURM_VER=17.11.5
+    cd /tmp
+    rm -rf slurm-${SLURM_VER}
+    tar jxpvf slurm-${SLURM_VER}.tar.bz2
+    cd slurm-${SLURM_VER}
+    ./configure --prefix=/ --sysconfdir=/etc/slurm --enable-pam --with-pam_dir=/lib/x86_64-linux-gnu/security/
+    make -j20
+    make -j20 contrib
+    make install
+    cp contribs/pam/.libs/pam_slurm.so /lib/x86_64-linux-gnu/security/
+    systemctl enable munge
+    systemctl enable slurmd
+    mkdir -p /etc/slurm /var/spool/slurmd /var/log/munge /var/log/slurm
+    chown slurm:slurm /etc/slurm
+    chmod 755 /etc/slurm
+    chown root:root /var/spool/slurmd
+    chmod 755 /var/spool/slurmd
+    chown munge:munge /var/log/munge
+    chmod 700 /var/log/munge
+    chown slurm:slurm /var/log/slurm
+    chmod 755 /var/log/slurm
+
+%post
+    # APT
+    apt-get -y clean
+
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow

@@ -1,0 +1,33 @@
+%files
+    /root/provision/passwd /etc
+    /root/provision/shadow /etc
+    /root/provision/group /etc
+    /root/provision/gshadow /etc
+
+%post
+    # Add additional packages below that require specific kernel support
+    export KERNEL_VER=4.14.0-49.13.1
+    export KERNEL_OS=el7a
+    export KERNEL_ARCH=aarch64
+    yum -ty install \
+            kernel-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
+            kernel-devel-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
+            kernel-headers-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
+            kernel-tools-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
+            perf-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
+            yum-plugin-versionlock
+    yum versionlock kernel-* perf-*
+
+%post
+    # Enable cpupower service
+    systemctl enable cpupower.service
+
+    # Yum
+    yum clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow

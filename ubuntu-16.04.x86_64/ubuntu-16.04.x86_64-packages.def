@@ -1,0 +1,56 @@
+%files
+    /etc/warewulf/ubuntu-16.04/passwd /etc
+    /etc/warewulf/ubuntu-16.04/shadow /etc
+    /etc/warewulf/ubuntu-16.04/group /etc
+    /etc/warewulf/ubuntu-16.04/gshadow /etc
+
+%post
+    apt-get -y install \
+            autoconf \
+            automake \
+            bc \
+            debhelper \
+            binutils \
+            binutils-dev \
+            bison \
+            build-essential \
+            bzip2 \
+            emacs \
+            environment-modules \
+            flex \
+            gcc \
+            g++ \
+            gfortran \
+            git \
+            graphviz \
+            ipmitool \
+            lftp \
+            libhwloc-dev \
+            libltdl-dev \
+            libcgroup-dev \
+            libpam0g \
+            libpam0g-dev \
+            libpam-cgroup \
+            libnuma-dev \
+            make \
+            manpages \
+            pkg-config \
+            python-libxml2 \
+            screen \
+            subversion \
+            sudo \
+            tcl \
+            tk \
+            tmux \
+            vim \
+            zlib1g-dev
+
+%post
+    # APT
+    apt-get -y clean
+
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow

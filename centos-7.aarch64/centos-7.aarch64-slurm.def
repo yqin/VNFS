@@ -1,0 +1,58 @@
+%files
+    /root/provision/passwd /etc
+    /root/provision/shadow /etc
+    /root/provision/group /etc
+    /root/provision/gshadow /etc
+
+%post
+    # Variables
+    export SLURM_VER=17.11.9-2
+    export NHC_VER=1.4.2
+    export KERNEL_OS=el7
+    export KERNEL_ARCH=aarch64
+
+    # Slurm
+    # Dependencies
+    yum -ty install \
+            munge \
+            munge-devel \
+            pam-devel
+    cd /tmp
+    wget -c https://download.schedmd.com/slurm/slurm-${SLURM_VER}.tar.bz2
+    rpmbuild -tb --define "_topdir /tmp/rpmbuild" --clean slurm-${SLURM_VER}.tar.bz2
+    yum -ty install \
+            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-${SLURM_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-libpmi-${SLURM_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-pam_slurm-${SLURM_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-slurmd-${SLURM_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    rm -rf /tmp/rpmbuild slurm-${SLURM_VER}.tar.bz2
+    systemctl enable munge
+    systemctl enable slurmd
+    mkdir -p /etc/slurm /var/spool/slurmd /var/log/munge /var/log/slurm
+    chown slurm:slurm /etc/slurm
+    chmod 755 /etc/slurm
+    chown root:root /var/spool/slurmd
+    chmod 755 /var/spool/slurmd
+    chown munge:munge /var/log/munge
+    chmod 700 /var/log/munge
+    chown slurm:slurm /var/log/slurm
+    chmod 755 /var/log/slurm
+
+    # NHC
+    cd /tmp
+    wget -c https://github.com/mej/nhc/releases/download/1.4.2/lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.src.rpm
+    rpmbuild --rebuild --define "_topdir /tmp/rpmbuild" --nocheck --clean lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.src.rpm
+    yum -ty install \
+            /tmp/rpmbuild/RPMS/noarch/lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.noarch.rpm
+    rm -rf /tmp/rpmbuild lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.src.rpm
+
+%post
+    # Yum
+    yum clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow

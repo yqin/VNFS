@@ -1,0 +1,27 @@
+%files
+    /etc/warewulf/ubuntu-17.10/passwd /etc
+    /etc/warewulf/ubuntu-17.10/shadow /etc
+    /etc/warewulf/ubuntu-17.10/group /etc
+    /etc/warewulf/ubuntu-17.10/gshadow /etc
+
+%files
+    /etc/profile.d/cluster-env.csh /etc/profile.d
+    /etc/profile.d/cluster-env.sh /etc/profile.d
+    /usr/bin/cluster-env /usr/bin
+
+%files
+    /global/software/centos-7/sources/warewulf/warewulf-monitor-legacy/usr/* /usr
+
+%post
+    # Fix wulfd
+    chmod -x /usr/lib/systemd/system/wulfd.service
+    sed -i '/PIDFile=\/var\/run\/wulfd.pid/d' /usr/lib/systemd/system/wulfd.service
+
+    systemctl enable wulfd
+
+%post
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow

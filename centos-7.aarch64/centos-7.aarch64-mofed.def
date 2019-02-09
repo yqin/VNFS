@@ -1,0 +1,132 @@
+%files
+    /root/provision/passwd /etc
+    /root/provision/shadow /etc
+    /root/provision/group /etc
+    /root/provision/gshadow /etc
+
+%post
+    # Variables
+    export MOFED_VER=4.4-2.0.7.0
+    export KNEM_VER=1.1.3
+    export OS=rhel7.5alternate
+    export KERNEL_VER=4.14.0-49.13.1
+    export KERNEL_OS=el7a
+    export KERNEL_ARCH=aarch64
+
+    # Dependencies
+    yum -ty install \
+            gcc \
+            libnl3 \
+            lsof \
+            make \
+            python-devel \
+            redhat-rpm-config \
+            rpm-build \
+            tcl \
+            tk
+
+    # Mellanox OFED for the specific kernel
+    cd /tmp
+    cat > ofed.conf << EOF
+mlnx-ofa_kernel=y
+mlnx-ofa_kernel-devel=y
+kernel-mft-mlnx=y
+knem-mlnx=n
+iser=n
+libibverbs=y
+libibverbs-devel=y
+libibverbs-devel-static=y
+libibverbs-utils=y
+libmlx4=y
+libmlx4-devel=y
+libmlx5=y
+libmlx5-devel=y
+librxe=y
+librxe-devel-static=y
+libibcm=y
+libibcm-devel=y
+libibumad=y
+libibumad-devel=y
+libibumad-static=y
+libibmad=y
+libibmad-devel=y
+libibmad-static=y
+ibsim=y
+ibacm=y
+librdmacm=y
+librdmacm-utils=y
+librdmacm-devel=y
+opensm=y
+opensm-libs=y
+opensm-devel=y
+opensm-static=y
+dapl=n
+dapl-devel=n
+dapl-devel-static=n
+dapl-utils=n
+perftest=y
+mstflint=y
+mft=y
+srptools=n
+ibutils2=y
+ibutils=n
+cc_mgr=y
+dump_pr=y
+ar_mgr=y
+ibdump=y
+infiniband-diags=y
+infiniband-diags-compat=y
+qperf=n
+mxm=n
+ucx=n
+ucx-devel=n
+ucx-static=n
+sharp=n
+mpi-selector=n
+openmpi=n
+libibprof=n
+hcoll=n
+mlnx-ethtool=n
+mlnxofed-docs=y
+ofed-scripts=y
+mpitests_openmpi=n
+mlnx-fw-updater=n
+EOF
+    wget -c http://www.mellanox.com/downloads/ofed/MLNX_OFED-${MOFED_VER}/MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
+    #wget -c http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VER}/MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
+    tar zxvpf MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
+    cd MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}
+    ./mlnxofedinstall --kernel ${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
+
+    # KNEM
+    cd /tmp
+    wget -c http://gforge.inria.fr/frs/download.php/37186/knem-${KNEM_VER}.tar.gz
+    tar zxpvf knem-${KNEM_VER}.tar.gz
+    cd knem-${KNEM_VER}
+    ./configure --with-linux-release=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
+    cd driver/linux/
+    make
+    mkdir -p /lib/modules/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}/extra/knem
+    cp knem.ko /lib/modules/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}/extra/knem
+    depmod -a ${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
+    cd /tmp
+    rm -rf knem-${KNEM_VER} knem-${KNEM_VER}.tar.gz
+
+    cat > /etc/udev/rules.d/10-knem.rules << EOF
+KERNEL=="knem", MODE="0666", OPTIONS="last_rule"
+EOF
+
+    cat > /etc/modules-load.d/knem.conf << EOF
+knem
+EOF
+
+%post
+    # Yum
+    yum clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow

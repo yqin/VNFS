@@ -1,0 +1,43 @@
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%files
+    /etc/profile.d/cluster-env.csh /etc/profile.d
+    /etc/profile.d/cluster-env.sh /etc/profile.d
+    /usr/bin/cluster-env /usr/bin
+
+%files
+    /global/software/centos-7/sources/warewulf/perl-Term-Screen-1.06-4.1.noarch.rpm /tmp
+    /global/software/centos-7/sources/warewulf/warewulf-monitor-legacy-common-2.9.91-1.el7.centos.x86_64.rpm /tmp
+    /global/software/centos-7/sources/warewulf/warewulf-monitor-legacy-tools-2.9.91-1.el7.centos.x86_64.rpm /tmp
+    /global/software/centos-7/sources/warewulf/warewulf-monitor-legacy-wulfd-2.9.91-1.el7.centos.x86_64.rpm /tmp
+
+%post
+    # Dependencies
+
+    # Warewulf monitor
+    cd /tmp
+    yum -ty install \
+            /tmp/perl-Term-Screen-1.06-4.1.noarch.rpm \
+            /tmp/warewulf-monitor-legacy-common-2.9.91-1.el7.centos.x86_64.rpm \
+            /tmp/warewulf-monitor-legacy-tools-2.9.91-1.el7.centos.x86_64.rpm \
+            /tmp/warewulf-monitor-legacy-wulfd-2.9.91-1.el7.centos.x86_64.rpm
+    rm -f /tmp/perl-Term-Screen-1.06-4.1.noarch.rpm /tmp/warewulf-monitor-legacy-common-2.9.91-1.el7.centos.x86_64.rpm /tmp/warewulf-monitor-legacy-tools-2.9.91-1.el7.centos.x86_64.rpm /tmp/warewulf-monitor-legacy-wulfd-2.9.91-1.el7.centos.x86_64.rpm
+
+    # Fix wulfd
+    chmod -x /usr/lib/systemd/system/wulfd.service
+    sed -i '/PIDFile=\/var\/run\/wulfd.pid/d' /usr/lib/systemd/system/wulfd.service
+
+%post
+    # Yum
+    yum clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow

@@ -1,0 +1,22 @@
+%files
+    /etc/warewulf/ubuntu-17.10/passwd /etc
+    /etc/warewulf/ubuntu-17.10/shadow /etc
+    /etc/warewulf/ubuntu-17.10/group /etc
+    /etc/warewulf/ubuntu-17.10/gshadow /etc
+
+%post
+    # Add additional packages below that require specific kernel support
+    export KERNEL_VER=4.13.0-16-generic
+    apt-get -y install \
+            linux-image-${KERNEL_VER} \
+            linux-headers-${KERNEL_VER}
+
+%post
+    # APT
+    apt-get -y clean
+
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow

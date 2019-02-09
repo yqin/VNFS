@@ -1,0 +1,82 @@
+BootStrap: yum
+OSVersion: 7
+MirrorURL: http://mirror.centos.org/altarch/%{OSVERSION}/os/$basearch/
+Include: yum
+
+
+%files
+    /root/provision/passwd /etc
+    /root/provision/shadow /etc
+    /root/provision/group /etc
+    /root/provision/gshadow /etc
+
+%post
+    yum -ty install \
+            epel-release
+    yum -y  update
+    yum -ty install \
+            chrony \
+            createrepo \
+            cronie \
+            crontabs \
+            e2fsprogs \
+            ethtool \
+            gzip \
+            hwloc \
+            initscripts \
+            iproute \
+            iputils \
+            irqbalance \
+            less \
+            libcgroup-pam \
+            net-tools \
+            nfs-utils \
+            numactl \
+            openssh \
+            openssh-clients \
+            openssh-server \
+            pam \
+            parted \
+            pciutils \
+            psmisc \
+            rdate \
+            rsync \
+            rsyslog \
+            selinux-policy-targeted \
+            shadow-utils \
+            strace \
+            sudo \
+            tar \
+            tcp_wrappers \
+            util-linux \
+            vim-minimal \
+            wget \
+            which \
+            words
+
+%post
+    # Fix ping
+    chmod 4755 /usr/bin/ping
+
+    # Fix /tmp, /var/tmp
+    chmod 1777 /tmp /var/tmp
+
+    # Root ssh
+    mkdir -p /root/.ssh
+    chown root:root /root/.ssh
+    chmod 700 /root/.ssh
+
+    # Mount points
+    mkdir -p /global/home /global/home/groups /global/home/users /global/scratch /global/software /local
+    chown root:root /global/home /global/home/groups /global/home/users /global/scratch /global/software /local
+    chmod 755 /global/home /global/home/groups /global/home/users /global/scratch /global/software /local
+
+    # Yum
+    yum clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow

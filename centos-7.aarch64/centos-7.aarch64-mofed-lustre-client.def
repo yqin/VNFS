@@ -1,0 +1,39 @@
+%files
+    /root/provision/passwd /etc
+    /root/provision/shadow /etc
+    /root/provision/group /etc
+    /root/provision/gshadow /etc
+
+%post
+    # Variables
+    export LUSTRE_VER=2.10.5
+    export OS=el7
+    export KERNEL_VER=4.14.0-49.13.1
+    export KERNEL_OS=el7a
+    export KERNEL_ARCH=aarch64
+
+    # Lustre Client
+    cd /tmp
+    wget -c https://downloads.hpdd.intel.com/public/lustre/lustre-${LUSTRE_VER}/${OS}/client/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
+    rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
+    tar zxvpf lustre-${LUSTRE_VER}.tar.gz
+    cd lustre-${LUSTRE_VER}
+    ./configure --disable-server --enable-client --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --with-o2ib=/usr/src/ofa_kernel/default
+    make -j16 rpms
+    yum -ty install \
+            kmod-lustre-client-${LUSTRE_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+            lustre-client-${LUSTRE_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+            lustre-iokit-${LUSTRE_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    cd ../
+    rm -rf lustre-${LUSTRE_VER} lustre-${LUSTRE_VER}-1.src.rpm lustre-${LUSTRE_VER}.tar.gz kmp-lustre-* lustre.spec
+
+%post
+    # Yum
+    yum clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow
