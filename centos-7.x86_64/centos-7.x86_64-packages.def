@@ -80,6 +80,7 @@
             libtiff-devel \
             libtool \
             libtool-ltdl-devel \
+            libunwind-devel \
             libuuid-devel \
             libX11-devel \
             libXaw-devel \
