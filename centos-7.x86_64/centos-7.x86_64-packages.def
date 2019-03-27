@@ -71,6 +71,7 @@
             libmount-devel \
             libmpc-devel \
             libnl3 \
+            libpciaccess-devel \
             libpng-devel \
             libproxy-python \
             libselinux-devel \
@@ -93,6 +94,7 @@
             libXt-devel \
             libXtst \
             libXtst-devel \
+            lshw \
             lsof \
             lvm2 \
             make \
