@@ -91,7 +91,4 @@
     rm -rf /var/lib/yum/yumdb/*
 
     # Misc
-    truncate -s 0 /etc/passwd
-    truncate -s 0 /etc/shadow
-    truncate -s 0 /etc/group
-    truncate -s 0 /etc/gshadow
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

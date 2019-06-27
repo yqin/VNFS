@@ -105,6 +105,7 @@
             motif \
             motif-devel \
             mpfr-devel \
+            msr-tools \
             ncurses-devel \
             newt-python \
             numactl-devel \
@@ -117,6 +118,7 @@
             perl-CGI \
             perl-Date-Manip \
             perl-Digest-MD5 \
+            perl-Digest-SHA \
             perl-Error \
             perl-ExtUtils-MakeMaker \
             perl-ExtUtils-ParseXS \
@@ -124,6 +126,7 @@
             perl-Module-Pluggable \
             perl-Pod-Simple \
             perl-Test-Simple \
+            perl-Time-Piece \
             perl-XML-LibXML \
             perl-XML-Parser \
             pixman-devel \
@@ -166,7 +169,4 @@
     rm -rf /var/lib/yum/yumdb/*
 
     # Misc
-    truncate -s 0 /etc/passwd
-    truncate -s 0 /etc/shadow
-    truncate -s 0 /etc/group
-    truncate -s 0 /etc/gshadow
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
