@@ -16,11 +16,6 @@
     wget -c http://www.mellanox.com/downloads/ofed/nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz
     tar zxpvf nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz
     cd nvidia-peer-memory-1.0
-    #./build_module.sh
-    #cd /tmp
-    #rpmbuild --rebuild --define "_topdir /tmp/rpmbuild" --clean nvidia_peer_memory-1.0-7.src.rpm
-    #yum -ty install \
-    #        /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/nvidia_peer_memory-${GPUDIRECT_VER}.${KERNEL_ARCH}.rpm
     make KVER=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} all install
     cd /tmp
     rm -rf nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz nvidia-peer-memory-1.0
