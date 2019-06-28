@@ -6,7 +6,7 @@
 
 %post
     # Variables
-    export LUSTRE_VER=2.10.7
+    export LUSTRE_VER=2.12.2
     export OS=centos
     export KERNEL_VER=3.10.0-957.12.1
     export KERNEL_OS=el7

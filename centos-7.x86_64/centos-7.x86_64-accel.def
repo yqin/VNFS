@@ -15,10 +15,11 @@
     cd /tmp
     wget -c https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
     yum -ty install \
-            /tmp/cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
+            cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
     yum -y  update
     yum -ty install \
             cuda-drivers
+    rm -f cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
 
     # Build CUDA Driver
     dkms autoinstall -k ${KERNEL_VER}.${KERNEL_OS}.${ARCH}
