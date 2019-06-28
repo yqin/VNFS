@@ -40,7 +40,7 @@
 
     # NHC
     cd /tmp
-    wget -c https://github.com/mej/nhc/releases/download/1.4.2/lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.src.rpm
+    wget -c https://github.com/mej/nhc/releases/download/${NHC_VER}/lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.src.rpm
     rpmbuild --rebuild --define "_topdir /tmp/rpmbuild" --nocheck --clean lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.src.rpm
     yum -ty install \
             /tmp/rpmbuild/RPMS/noarch/lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.noarch.rpm

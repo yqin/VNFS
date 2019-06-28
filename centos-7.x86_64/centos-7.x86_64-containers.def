@@ -1,0 +1,18 @@
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%post
+    yum -ty install \
+            docker \
+            singularity
+
+%post
+    # Yum
+    yum clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

@@ -94,6 +94,7 @@
             libXt-devel \
             libXtst \
             libXtst-devel \
+            libyaml-devel \
             lshw \
             lsof \
             lvm2 \
