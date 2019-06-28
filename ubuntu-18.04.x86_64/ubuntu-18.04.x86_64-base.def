@@ -1,0 +1,71 @@
+BootStrap: debootstrap
+OSVersion: bionic
+MirrorURL: http://mirror.enzu.com/ubuntu/
+
+
+%files
+    /etc/warewulf/ubuntu-18.04/passwd /etc
+    /etc/warewulf/ubuntu-18.04/shadow /etc
+    /etc/warewulf/ubuntu-18.04/group /etc
+    /etc/warewulf/ubuntu-18.04/gshadow /etc
+
+%post
+    apt-get -y install \
+            software-properties-common
+    add-apt-repository 'deb http://mirror.enzu.com/ubuntu bionic main restricted universe'
+    add-apt-repository 'deb http://mirror.enzu.com/ubuntu bionic-security main restricted universe'
+    add-apt-repository 'deb http://mirror.enzu.com/ubuntu bionic-updates main restricted universe'
+    apt-get update
+    apt-get -y install \
+            apt-utils \
+            cron \
+            e2fsprogs \
+            ethtool \
+            hwloc \
+            ifupdown \
+            iproute2 \
+            iputils-ping \
+            iputils-tracepath \
+            irqbalance \
+            less \
+            locales \
+            lsb-release \
+            lsof \
+            net-tools \
+            nfs-common \
+            ntp \
+            numactl \
+            parted \
+            pciutils \
+            psmisc \
+            rdate \
+            rsync \
+            rsyslog \
+            ssh \
+            strace \
+            vim-tiny \
+            wget
+
+%post
+    # Root ssh
+    mkdir -p /root/.ssh
+    chown root:root /root/.ssh
+    chmod 700 /root/.ssh
+
+    # Mount points
+    mkdir -p /global/home /global/home/groups /global/home/users /global/scratch /global/software /local
+    chown root:root /global/home /global/home/groups /global/home/users /global/scratch /global/software /local
+    chmod 755 /global/home /global/home/groups /global/home/users /global/scratch /global/software /local
+
+    # Fix /sbin/init
+    #rm -f /sbin/init
+    #ln -s ../lib/systemd/systemd /sbin/init
+
+    # Locales
+    locale-gen en_US.UTF-8
+
+    # APT
+    apt-get -y clean
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

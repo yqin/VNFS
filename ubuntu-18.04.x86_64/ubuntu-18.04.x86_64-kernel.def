@@ -1,0 +1,20 @@
+%files
+    /etc/warewulf/ubuntu-18.04/passwd /etc
+    /etc/warewulf/ubuntu-18.04/shadow /etc
+    /etc/warewulf/ubuntu-18.04/group /etc
+    /etc/warewulf/ubuntu-18.04/gshadow /etc
+
+%post
+    # Variables
+    export KERNEL_VER=4.15.0-52-generic
+
+    apt-get -y install \
+            linux-image-${KERNEL_VER} \
+            linux-headers-${KERNEL_VER}
+
+%post
+    # APT
+    apt-get -y clean
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

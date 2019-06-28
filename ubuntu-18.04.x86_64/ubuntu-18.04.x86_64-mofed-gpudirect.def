@@ -1,0 +1,26 @@
+%files
+    /etc/warewulf/ubuntu-18.04/passwd /etc
+    /etc/warewulf/ubuntu-18.04/shadow /etc
+    /etc/warewulf/ubuntu-18.04/group /etc
+    /etc/warewulf/ubuntu-18.04/gshadow /etc
+
+%post
+    # Variables
+    export GPUDIRECT_VER=1.0-7
+    export KERNEL_VER=4.15.0-52-generic
+
+    # GPUDirect RDMA
+    cd /tmp
+    wget -c http://www.mellanox.com/downloads/ofed/nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz
+    tar zxpvf nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz
+    cd nvidia-peer-memory-1.0
+    make KVER=${KERNEL_VER} all install
+    cd /tmp
+    rm -rf nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz nvidia-peer-memory-1.0
+
+%post
+    # APT
+    apt-get -y clean
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

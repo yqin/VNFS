@@ -1,0 +1,93 @@
+%files
+    /etc/warewulf/ubuntu-18.04/passwd /etc
+    /etc/warewulf/ubuntu-18.04/shadow /etc
+    /etc/warewulf/ubuntu-18.04/group /etc
+    /etc/warewulf/ubuntu-18.04/gshadow /etc
+
+%post
+    # Variables
+    export MOFED_VER=4.6-1.0.1.1
+    export OS=ubuntu18.04
+    export KERNEL_VER=4.15.0-52-generic
+    export KERNEL_ARCH=x86_64
+
+    # Dependencies
+
+    # Mellanox OFED for the specific kernel
+    cd /tmp
+    cat > ofed.conf << EOF
+ofed-scripts=y
+mlnx-ofed-kernel-utils=y
+mlnx-ofed-kernel-modules=y
+iser-modules=n
+isert-modules=n
+srp-modules=n
+libibverbs1=y
+ibverbs-utils=y
+libibverbs-dev=y
+libibverbs1-dbg=y
+libmlx4-1=y
+libmlx4-dev=y
+libmlx4-1-dbg=y
+libmlx5-1=y
+libmlx5-dev=y
+libmlx5-1-dbg=y
+librxe-1=y
+librxe-dev=y
+librxe-1-dbg=y
+libibumad=y
+libibumad-static=y
+libibumad-devel=y
+ibacm=y
+ibacm-dev=y
+librdmacm1=y
+librdmacm-utils=y
+librdmacm-dev=y
+mstflint=y
+ibdump=y
+libibmad=y
+libibmad-static=y
+libibmad-devel=y
+libopensm=y
+opensm=y
+opensm-doc=y
+libopensm-devel=y
+infiniband-diags=y
+infiniband-diags-compat=y
+mft=y
+kernel-mft-modules=y
+libibcm1=y
+libibcm-dev=y
+perftest=y
+ibutils2=y
+libibdm1=y
+ibutils=y
+cc-mgr=y
+ar-mgr=y
+dump-pr=y
+ibsim=y
+ibsim-doc=y
+knem-modules=n
+mxm=n
+ucx=n
+sharp=n
+hcoll=n
+openmpi=n
+mpitests=n
+libdapl2=y
+dapl2-utils=y
+libdapl-dev=y
+srptools=n
+mlnx-ethtool=n
+EOF
+    wget -c http://www.mellanox.com/downloads/ofed/MLNX_OFED-${MOFED_VER}/MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
+    tar zxvpf MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
+    cd MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}
+    ./mlnxofedinstall --kernel ${KERNEL_VER} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
+
+%post
+    # APT
+    apt-get -y clean
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

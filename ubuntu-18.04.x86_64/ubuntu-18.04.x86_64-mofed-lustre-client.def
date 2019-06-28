@@ -1,0 +1,33 @@
+%files
+    /etc/warewulf/ubuntu-18.04/passwd /etc
+    /etc/warewulf/ubuntu-18.04/shadow /etc
+    /etc/warewulf/ubuntu-18.04/group /etc
+    /etc/warewulf/ubuntu-18.04/gshadow /etc
+
+%post
+    # Variables
+    export LUSTRE_VER=2.12.2
+    export KERNEL_VER=4.15.0-52-generic
+    export KERNEL_OS=ubuntu1804
+    export KERNEL_ARCH=amd64
+
+    # Dependencies
+    apt-get -y install \
+            libyaml-dev
+    # Lustre Client
+    cd /tmp
+    wget -c https://downloads.whamcloud.com/public/lustre/lustre-${LUSTRE_VER}/${KERNEL_OS}/client/lustre-source_${LUSTRE_VER}-1_all.deb
+    dpkg-deb -xv lustre-source_${LUSTRE_VER}-1_all.deb .
+    tar jxpvf usr/src/lustre.tar.bz2
+    cd modules/lustre
+    ./configure --disable-server --enable-client --with-linux=/usr/src/linux-headers-${KERNEL_VER} --with-o2ib=/usr/src/ofa_kernel/default
+    make -j16 install
+    cd /tmp
+    rm -rf lustre-source_${LUSTRE_VER}-1_all.deb usr modules
+
+%post
+    # APT
+    apt-get -y clean
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
