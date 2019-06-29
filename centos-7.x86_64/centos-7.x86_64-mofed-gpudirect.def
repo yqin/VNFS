@@ -13,12 +13,21 @@
 
     # GPUDirect RDMA
     cd /tmp
-    wget -c http://www.mellanox.com/downloads/ofed/nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz
-    tar zxpvf nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz
-    cd nvidia-peer-memory-1.0
+    rm -rf nv_peer_memory
+    git clone https://github.com/Mellanox/nv_peer_memory.git
+    cd nv_peer_memory
     make KVER=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} all install
     cd /tmp
-    rm -rf nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz nvidia-peer-memory-1.0
+    rm -rf nv_peer_memory
+
+    # GDRCopy
+    cd /tmp
+    rm -rf gdrcopy
+    git clone https://github.com/NVIDIA/gdrcopy.git
+    cd gdrcopy
+    make KVER=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} PREFIX=/usr driver lib drv_install lib_install
+    cd /tmp
+    rm -rf gdrcopy
 
 %post
     # Yum
