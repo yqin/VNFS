@@ -6,8 +6,8 @@
 
 %post
     # Variables
-    export IFS_VER=10.9.2.0.9
-    export DLTAG=28721
+    export IFS_VER=10.9.3.1.1
+    export DLTAG=28866
     export OS=RHEL76
     export KERNEL_VER=3.10.0-957.12.1
     export KERNEL_OS=el7
@@ -17,11 +17,9 @@
     # Dependencies
     yum -ty install \
             atlas \
-            bc \
             dapl \
             dapl-devel \
             dapl-utils \
-            expect \
             ibacm \
             infiniband-diags \
             libibcm \
@@ -29,12 +27,10 @@
             libibumad \
             libibverbs \
             opensm-libs \
-            openssl \
             perftest \
             qperf \
             rdma-core \
-            rdma-core-devel \
-            tcl
+            rdma-core-devel
 
     # Intel IFS
     cd /tmp

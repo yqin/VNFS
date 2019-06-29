@@ -12,16 +12,16 @@ all:
 
 generic: base overlay-packages overlay-slurm overlay-warewulf cleanup
 container: base overlay-packages overlay-containers overlay-slurm overlay-warewulf cleanup
-ifs: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-ifs cleanup
-ifs-accel: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-ifs cleanup
-ifs-accel-lustre: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-ifs overlay-ifs-lustre-client cleanup
-ifs-lustre: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-ifs overlay-ifs-lustre-client cleanup
-ifs-lustre-server: overlay-ifs-lustre-server cleanup
-mofed: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-mofed cleanup
-mofed-accel: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect cleanup
-mofed-accel-lustre: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
-mofed-lustre: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-mofed overlay-mofed-lustre-client cleanup
-mofed-lustre-server: overlay-mofed-lustre-server cleanup
+ifs: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-ifs cleanup
+ifs-accel: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-ifs cleanup
+ifs-accel-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-ifs overlay-ifs-lustre-client cleanup
+ifs-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-ifs overlay-ifs-lustre-client cleanup
+ifs-lustre-server: base overlay-packages overlay-kernel overlay-ifs overlay-ifs-lustre-server cleanup
+mofed: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-mofed cleanup
+mofed-accel: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect cleanup
+mofed-accel-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
+mofed-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-mofed overlay-mofed-lustre-client cleanup
+mofed-lustre-server: base overlay-packages overlay-kernel overlay-mofed overlay-mofed-lustre-server cleanup
 
 base:
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-base.def
