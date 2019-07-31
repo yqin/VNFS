@@ -5,8 +5,9 @@
     /etc/gshadow /etc
 
 %post
+    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     yum -ty install \
-            docker \
+            docker-ce \
             singularity
 
 %post

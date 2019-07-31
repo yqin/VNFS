@@ -14,8 +14,7 @@
             kernel-devel-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
             kernel-headers-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
             kernel-tools-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
-            perf-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
-            yum-plugin-versionlock
+            perf-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
     yum versionlock kernel-* perf-*
 
 %post

@@ -52,7 +52,9 @@ Include: yum
             vim-minimal \
             wget \
             which \
-            words
+            words \
+            yum-plugin-versionlock \
+            yum-utils
 
 %post
     # Fix ping
