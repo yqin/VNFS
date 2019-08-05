@@ -16,8 +16,6 @@
     /global/software/centos-7/sources/warewulf/warewulf-monitor-legacy-wulfd-2.9.91-1.el7.centos.x86_64.rpm /tmp
 
 %post
-    # Dependencies
-
     # Warewulf monitor
     cd /tmp
     yum -ty install \

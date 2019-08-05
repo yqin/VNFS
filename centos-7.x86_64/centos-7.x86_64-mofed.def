@@ -13,18 +13,6 @@
     export KERNEL_OS=el7
     export KERNEL_ARCH=x86_64
 
-    # Dependencies
-    yum -ty install \
-            gcc \
-            libnl3 \
-            lsof \
-            make \
-            python-devel \
-            redhat-rpm-config \
-            rpm-build \
-            tcl \
-            tk
-
     # Mellanox OFED for the specific kernel
     cd /tmp
     cat > ofed.conf << EOF
