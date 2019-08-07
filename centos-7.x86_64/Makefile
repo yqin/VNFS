@@ -8,7 +8,7 @@ KERNEL_VER  := 3.10.0-957.12.1.el7.x86_64
 
 
 all:
-	@ echo "Select a make target: generic, container, mofed, mofed-accel, mofed-accel-lustre, mofed-accel-bluefield-lustre, mofed-lustre, mofed-lustre-server, ifs, ifs-accel, ifs-accel-lustre, ifs-lustre, ifs-lustre-server"
+	@ echo "Select a make target: generic, container, mofed, mofed-accel, mofed-accel-lustre, mofed-accel-bluefield-lustre, mofed-accel-kvm-lustre, mofed-lustre, mofed-lustre-server, ifs, ifs-accel, ifs-accel-lustre, ifs-lustre, ifs-lustre-server"
 
 generic: base overlay-packages overlay-slurm overlay-warewulf cleanup
 container: base overlay-packages overlay-containers overlay-slurm overlay-warewulf cleanup
@@ -21,6 +21,7 @@ mofed: base overlay-packages overlay-kernel overlay-containers overlay-slurm ove
 mofed-accel: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect cleanup
 mofed-accel-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
 mofed-accel-bluefield-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-bluefield overlay-mofed-lustre-client cleanup
+mofed-accel-kvm-lustre: base overlay-packages overlay-kvm-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
 mofed-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-mofed overlay-mofed-lustre-client cleanup
 mofed-lustre-server: base overlay-packages overlay-kernel overlay-mofed overlay-mofed-lustre-server cleanup
 
@@ -32,6 +33,9 @@ overlay-kernel: base
 
 overlay-packages: overlay-kernel
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-packages.def
+
+overlay-kvm-packages: overlay-packages
+	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-kvm-packages.def
 
 overlay-containers: overlay-packages
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-containers.def
