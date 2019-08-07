@@ -21,7 +21,7 @@ mofed: base overlay-packages overlay-kernel overlay-containers overlay-slurm ove
 mofed-accel: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect cleanup
 mofed-accel-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
 mofed-accel-bluefield-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-bluefield overlay-mofed-lustre-client cleanup
-mofed-accel-kvm-lustre: base overlay-packages overlay-kvm-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
+mofed-accel-kvm-lustre: base overlay-packages overlay-kvm overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
 mofed-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-mofed overlay-mofed-lustre-client cleanup
 mofed-lustre-server: base overlay-packages overlay-kernel overlay-mofed overlay-mofed-lustre-server cleanup
 
@@ -34,8 +34,8 @@ overlay-kernel: base
 overlay-packages: overlay-kernel
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-packages.def
 
-overlay-kvm-packages: overlay-packages
-	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-kvm-packages.def
+overlay-kvm: overlay-packages
+	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-kvm.def
 
 overlay-containers: overlay-packages
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-containers.def
