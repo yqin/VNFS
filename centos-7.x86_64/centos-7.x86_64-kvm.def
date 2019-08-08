@@ -7,10 +7,14 @@
 %post
     yum -ty install \
             kvm \
-            virt-manager libvirt libvirt-python python-virtinst \
-            qemu-kvm qemu-kvm-tools
-
-    systemctl enable libvirtd.service
+            libvirt \
+            libvirt-python \
+            python-virtinst \
+            qemu-kvm \
+            qemu-kvm-tools \
+            virt-install \
+            virt-manager \
+            virt-viewer
 
 %post
     # Yum
