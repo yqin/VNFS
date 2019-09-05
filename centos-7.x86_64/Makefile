@@ -8,20 +8,20 @@ KERNEL_VER  := 3.10.0-957.12.1.el7.x86_64
 
 
 all:
-	@ echo "Select a make target: generic, container, mofed, mofed-accel, mofed-accel-lustre, mofed-accel-bluefield-lustre, mofed-accel-kvm-lustre, mofed-lustre, mofed-lustre-server, ifs, ifs-accel, ifs-accel-lustre, ifs-lustre, ifs-lustre-server"
+	@ echo "Select a make target: generic, container, mofed, mofed-cuda, mofed-cuda-lustre, mofed-cuda-bluefield-lustre, mofed-cuda-kvm-lustre, mofed-lustre, mofed-lustre-server, ifs, ifs-cuda, ifs-cuda-lustre, ifs-lustre, ifs-lustre-server"
 
 generic: base overlay-packages overlay-slurm overlay-warewulf cleanup
 container: base overlay-packages overlay-containers overlay-slurm overlay-warewulf cleanup
 ifs: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-ifs cleanup
-ifs-accel: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-ifs cleanup
-ifs-accel-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-ifs overlay-ifs-lustre-client cleanup
+ifs-cuda: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-cuda overlay-ifs cleanup
+ifs-cuda-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-cuda overlay-ifs overlay-ifs-lustre-client cleanup
 ifs-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-ifs overlay-ifs-lustre-client cleanup
 ifs-lustre-server: base overlay-packages overlay-kernel overlay-ifs overlay-ifs-lustre-server cleanup
 mofed: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-mofed cleanup
-mofed-accel: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect cleanup
-mofed-accel-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
-mofed-accel-bluefield-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-bluefield overlay-mofed-lustre-client cleanup
-mofed-accel-kvm-lustre: base overlay-packages overlay-kvm overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
+mofed-cuda: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-cuda overlay-mofed overlay-mofed-gpudirect cleanup
+mofed-cuda-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-cuda overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
+mofed-cuda-bluefield-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-cuda overlay-mofed overlay-mofed-gpudirect overlay-mofed-bluefield overlay-mofed-lustre-client cleanup
+mofed-cuda-kvm-lustre: base overlay-packages overlay-kvm overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-cuda overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
 mofed-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-mofed overlay-mofed-lustre-client cleanup
 mofed-lustre-server: base overlay-packages overlay-kernel overlay-mofed overlay-mofed-lustre-server cleanup
 
@@ -46,8 +46,8 @@ overlay-slurm: overlay-packages
 overlay-warewulf: overlay-packages
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-warewulf.def
 
-overlay-accel: overlay-kernel
-	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-accel.def
+overlay-cuda: overlay-kernel
+	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-cuda.def
 
 overlay-ifs: overlay-kernel
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-ifs.def
@@ -61,7 +61,7 @@ overlay-ifs-lustre-server: overlay-ifs
 overlay-mofed: overlay-kernel
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-mofed.def
 
-overlay-mofed-gpudirect: overlay-mofed overlay-accel
+overlay-mofed-gpudirect: overlay-mofed overlay-cuda
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-mofed-gpudirect.def
 
 overlay-mofed-bluefield: overlay-mofed
