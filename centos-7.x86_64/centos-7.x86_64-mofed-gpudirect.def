@@ -25,6 +25,7 @@
     cd /tmp
     rm -rf gdrcopy-${GDRCOPY_VER} v${GDRCOPY_VER}.tar.gz
     wget -c https://github.com/NVIDIA/gdrcopy/archive/v${GDRCOPY_VER}.tar.gz
+    tar zxpvf v${GDRCOPY_VER}.tar.gz
     cd gdrcopy-${GDRCOPY_VER}
     make KVER=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} PREFIX=/usr driver lib drv_install lib_install
     cd /tmp
