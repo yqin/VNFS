@@ -1,0 +1,43 @@
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%post
+    # Variables
+    export KERNEL_OS=el7
+    export OS=centos
+    export ARCH=x86_64
+
+    # Beegfs
+    wget -O /etc/yum.repos.d/beegfs_rhel7.repo https://www.beegfs.io/release/latest-stable/dists/beegfs_rhel7.repo
+    yum -ty install \
+	    beegfs-mgmtd \
+	    beegfs-meta \
+	    beegfs-storage \
+	    beegfs-client \
+	    beegfs-helperd \
+	    beegfs-utils \
+	    beegfs-admon \
+            libbeegfs-ib
+
+    mkdir -p /mnt/beegfs3 /mnt/beegfs4
+
+    # Build the client with MOFED 4.5 patch.
+    wget https://www.beegfs.io/release/beegfs_7_1/patch/client-ofed4.5.patch -O /opt/beegfs/src/client/client_module_7/client-ofed4.5.patch
+    cd /opt/beegfs/src/client/client_module_7
+    patch -p1 < client-ofed4.5.patch
+    echo "buildArgs=-j8 BEEGFS_OPENTK_IBVERBS=1 OFED_INCLUDE_PATH=/usr/src/ofa_kernel/default/include" >> /etc/beegfs/beegfs-client-autobuild.conf
+    # /etc/init.d/beegfs-client rebuild
+
+%post
+    # Yum
+    yum clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    truncate -s 0 /etc/passwd
+    truncate -s 0 /etc/shadow
+    truncate -s 0 /etc/group
+    truncate -s 0 /etc/gshadow

@@ -4,7 +4,7 @@ GITVERS     := $(shell git describe --always)
 TAG         ?= $(firstword $(MAKECMDGOALS))
 VNFSNAME    := centos-7.x86_64
 CHROOTDIR   := $(BUILDDIR)/$(VNFSNAME)-$(TAG)-$(GITVERS)
-KERNEL_VER  := 3.10.0-957.12.1.el7.x86_64
+KERNEL_VER  := 3.10.0-1062.1.2.el7.x86_64
 
 
 all:
@@ -15,11 +15,13 @@ container: base overlay-packages overlay-containers overlay-slurm overlay-warewu
 ifs: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-ifs cleanup
 ifs-accel: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-ifs cleanup
 ifs-accel-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-ifs overlay-ifs-lustre-client cleanup
+ifs-accel-beegfs-lustre: base overlay-packages overlay-slurm overlay-warewulf overlay-accel overlay-ifs overlay-ifs-lustre-client overlay-beegfs cleanup
 ifs-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-ifs overlay-ifs-lustre-client cleanup
 ifs-lustre-server: base overlay-packages overlay-kernel overlay-ifs overlay-ifs-lustre-server cleanup
 mofed: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-mofed cleanup
 mofed-accel: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect cleanup
 mofed-accel-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
+mofed-accel-beegfs-lustre: base overlay-packages overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-beegfs overlay-mofed-lustre-client cleanup
 mofed-accel-bluefield-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-bluefield overlay-mofed-lustre-client cleanup
 mofed-accel-kvm-lustre: base overlay-packages overlay-kvm overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
 mofed-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-mofed overlay-mofed-lustre-client cleanup
@@ -48,6 +50,9 @@ overlay-warewulf: overlay-packages
 
 overlay-accel: overlay-kernel
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-accel.def
+
+overlay-beegfs: overlay-beegfs
+	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-beegfs.def
 
 overlay-ifs: overlay-kernel
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-ifs.def
