@@ -85,7 +85,8 @@ EOF
     wget -c http://www.mellanox.com/downloads/ofed/MLNX_OFED-${MOFED_VER}/MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
     tar zxvpf MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
     cd MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}
-    ./mlnxofedinstall --kernel ${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
+    ./mlnxofedinstall --kernel ${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --without-fw-update --config /tmp/ofed.conf --force
+    # ./mlnxofedinstall --kernel ${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
 
     # KNEM
     cd /tmp
