@@ -4,7 +4,7 @@ GITVERS     := $(shell git describe --always)
 TAG         ?= $(firstword $(MAKECMDGOALS))
 VNFSNAME    := centos-7.x86_64
 CHROOTDIR   := $(BUILDDIR)/$(VNFSNAME)-$(TAG)-$(GITVERS)
-KERNEL_VER  := 3.10.0-1062.1.2.el7.x86_64
+KERNEL_VER  := 3.10.0-1062.4.1.el7.x86_64
 
 
 all:
