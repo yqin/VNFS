@@ -6,108 +6,112 @@
 
 %post
     # Variables
-    export MOFED_VER=4.6-1.0.1.1
-    export KNEM_VER=1.1.3
-    export OS=rhel7.6
-    export KERNEL_VER=3.10.0-957.12.1
+    export MOFED_VER=4.7-1.0.0.1
+    export OS=rhel7.7
+    export KERNEL_VER=3.10.0-1062.4.1
     export KERNEL_OS=el7
     export KERNEL_ARCH=x86_64
+    export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
 
     # Mellanox OFED for the specific kernel
     cd /tmp
     cat > ofed.conf << EOF
 mlnx-ofa_kernel=y
 mlnx-ofa_kernel-devel=y
+knem=y
 kernel-mft-mlnx=y
-knem-mlnx=n
 iser=n
 srp=n
 isert=n
+mlnx-nvme=n
+rshim=y
 libibverbs=y
 libibverbs-devel=y
 libibverbs-devel-static=y
 libibverbs-utils=y
+libibverbs-debuginfo=n
 libmlx4=y
 libmlx4-devel=y
+libmlx4-debuginfo=n
 libmlx5=y
 libmlx5-devel=y
+libmlx5-debuginfo=n
 librxe=y
 librxe-devel-static=y
+librxe-debuginfo=n
 libibcm=y
 libibcm-devel=y
+libibcm-debuginfo=n
 libibumad=y
 libibumad-devel=y
 libibumad-static=y
+libibumad-debuginfo=n
 libibmad=y
 libibmad-devel=y
 libibmad-static=y
+libibmad-debuginfo=n
 ibsim=y
+ibsim-debuginfo=n
 ibacm=y
 librdmacm=y
 librdmacm-utils=y
 librdmacm-devel=y
+librdmacm-debuginfo=n
 opensm=y
 opensm-libs=y
 opensm-devel=y
 opensm-static=y
+opensm-debuginfo=n
 dapl=y
 dapl-devel=y
 dapl-devel-static=y
 dapl-utils=y
+dapl-debuginfo=n
 perftest=y
+multiperf=n
+multiperf-debuginfo=n
 mstflint=y
-mft=y
 srptools=n
-ibutils2=y
-ibutils=n
-cc_mgr=y
-dump_pr=y
-ar_mgr=y
-ibdump=y
+ibutils=y
 infiniband-diags=y
 infiniband-diags-compat=y
 qperf=n
-mxm=n
+qperf-debuginfo=n
+ofed-docs=y
+ofed-scripts=y
 ucx=n
 ucx-devel=n
-ucx-static=n
-sharp=n
+ucx-cma=n
+ucx-ib=n
+ucx-ib-cm=n
+ucx-rdmacm=n
+ucx-knem=n
 mpi-selector=n
 openmpi=n
-libibprof=n
-hcoll=n
-mlnx-ethtool=n
-mlnxofed-docs=y
-ofed-scripts=y
+mlnx-ethtool=y
+mlnx-ethtool-debuginfo=n
+mlnx-iproute2=y
 mpitests_openmpi=n
-mlnx-fw-updater=n
+core=y
+mlxfw=y
+mlx4=y
+mlx4_en=y
+mlx5=y
+ipoib=y
+mlx5_fpga_tools=n
 EOF
     wget -c http://www.mellanox.com/downloads/ofed/MLNX_OFED-${MOFED_VER}/MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
     tar zxvpf MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
     cd MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}
-    ./mlnxofedinstall --kernel ${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
-
-    # KNEM
-    cd /tmp
-    wget -c http://gforge.inria.fr/frs/download.php/37186/knem-${KNEM_VER}.tar.gz
-    tar zxpvf knem-${KNEM_VER}.tar.gz
-    cd knem-${KNEM_VER}
-    ./configure --with-linux-release=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
-    cd driver/linux/
-    make
-    mkdir -p /lib/modules/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}/extra/knem
-    cp knem.ko /lib/modules/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}/extra/knem
-    depmod -a ${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
-    cd /tmp
-    rm -rf knem-${KNEM_VER} knem-${KNEM_VER}.tar.gz
-
-    cat > /etc/udev/rules.d/10-knem.rules << EOF
-KERNEL=="knem", MODE="0666", OPTIONS="last_rule"
-EOF
-
-    cat > /etc/modules-load.d/knem.conf << EOF
-knem
-EOF
+    ./mlnxofedinstall --kernel ${KVERSION} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
+    ## Fix kernel modules location
+    yum remove -y kmod-mlnx-ofa_kernel kmod-kernel-mft-mlnx kmod-knem kmod-rshim
+    export MOFED_INS_DIR=/tmp/MLNX_OFED_LINUX-${MOFED_VER}-${KVERSION}/MLNX_OFED_LINUX-${MOFED_VER}-${OS}-ext/RPMS/COMMON
+    yum -ty install \
+        ${MOFED_INS_DIR}/kernel-mft-4.13.0-102.kver.3.10.0_1062.4.1.el7.x86_64.x86_64.rpm \
+        ${MOFED_INS_DIR}/knem-modules-1.1.3.90mlnx1-OFED.4.6.2.0.8.1.g8d875ee.kver.3.10.0_1062.4.1.el7.x86_64.x86_64.rpm \
+        ${MOFED_INS_DIR}/mlnx-ofa_kernel-modules-4.7-OFED.4.7.1.0.0.1.g1c4bf42.kver.3.10.0_1062.4.1.el7.x86_64.x86_64.rpm \
+        ${MOFED_INS_DIR}/rshim-1.8-0.g463f780.kver.3.10.0_1062.4.1.el7.x86_64.x86_64.rpm
 
 %post
     # Yum
