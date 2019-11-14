@@ -15,6 +15,7 @@
             virt-install \
             virt-manager \
             virt-viewer
+    systemctl disable ksm.service ksmtuned.service libvirtd.service netcf-transaction.service
 
 %post
     # Yum
