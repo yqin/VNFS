@@ -150,6 +150,7 @@
             tcpdump \
             tcsh \
             texinfo \
+            tig \
             time \
             tk-devel \
             tmux \
