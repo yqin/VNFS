@@ -11,14 +11,14 @@
     export KERNEL_OS=el7
     export ARCH=x86_64
 
-    # CUDA
+    # CUDA d
     cd /tmp
     wget -c https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
     yum -ty install \
             cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
     yum -y  update
     yum -ty install \
-            cuda-drivers
+            cuda-drivers cuda
     rm -f cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
 
     # Build CUDA Driver
