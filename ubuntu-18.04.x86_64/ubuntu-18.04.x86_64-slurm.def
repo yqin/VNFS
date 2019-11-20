@@ -9,7 +9,7 @@
 
 %post
     # Variables
-    export SLURM_VER=18.08.7
+    export SLURM_VER=19.05.3-2
     export NHC_VER=1.4.2
 
     # Slurm

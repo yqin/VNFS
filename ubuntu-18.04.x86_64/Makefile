@@ -4,17 +4,18 @@ GITVERS     := $(shell git describe --always)
 TAG         ?= $(firstword $(MAKECMDGOALS))
 VNFSNAME    := ubuntu-18.04.x86_64
 CHROOTDIR   := $(BUILDDIR)/$(VNFSNAME)-$(TAG)-$(GITVERS)
-KERNEL_VER  := 4.15.0-52-generic
+KERNEL_VER  := 4.15.0-70-generic
 
 
 all:
-	@ echo "Select a make target: generic, mofed, mofed-accel, mofed-accel-lustre, mofed-lustre"
+	@ echo "Select a make target: generic, mofed, mofed-cuda, mofed-cuda-lustre, mofed-lustre"
 
 generic: base overlay-packages overlay-slurm overlay-warewulf cleanup
 container: base overlay-packages overlay-containers overlay-slurm overlay-warewulf cleanup
 mofed: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-mofed cleanup
-mofed-accel: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect cleanup
-mofed-accel-lustre: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-accel overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
+mofed-cuda: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-cuda overlay-mofed overlay-mofed-gpudirect cleanup
+mofed-cuda-lustre: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-cuda overlay-mofed overlay-mofed-lustre-client cleanup
+# mofed-cuda-lustre: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-cuda overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
 mofed-lustre: base overlay-packages overlay-containers overlay-slurm overlay-warewulf overlay-mofed overlay-mofed-lustre-client cleanup
 
 base:
@@ -35,8 +36,8 @@ overlay-slurm: overlay-packages
 overlay-warewulf: overlay-packages
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-warewulf.def
 
-overlay-accel: overlay-kernel
-	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-accel.def
+overlay-cuda: overlay-kernel
+	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-cuda.def
 
 overlay-mofed: overlay-kernel
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-mofed.def
@@ -44,7 +45,7 @@ overlay-mofed: overlay-kernel
 overlay-mofed-lustre-client: overlay-mofed
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-mofed-lustre-client.def
 
-overlay-mofed-gpudirect: overlay-mofed overlay-accel
+overlay-mofed-gpudirect: overlay-mofed overlay-cuda
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-mofed-gpudirect.def
 
 cleanup:
