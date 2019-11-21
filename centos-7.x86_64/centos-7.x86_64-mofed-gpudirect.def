@@ -14,12 +14,16 @@
 
     # GPUDirect RDMA
     cd /tmp
-    rm -rf nv_peer_memory
-    git clone https://github.com/Mellanox/nv_peer_memory.git
-    cd nv_peer_memory
+    rm -rf nvidia-peer-memory-1.0
+    wget https://www.mellanox.com/downloads/ofed/nvidia-peer-memory_1.0-8.tar.gz
+    tar xfp nvidia-peer-memory_1.0-8.tar.gz
+    cd nvidia-peer-memory-1.0
+    # rm -rf nv_peer_memory
+    # git clone https://github.com/Mellanox/nv_peer_memory.git
+    # cd nv_peer_memory
     make KVER=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} all install
     cd /tmp
-    rm -rf nv_peer_memory
+    rm -rf nv_peer_memory nvidia-peer-memory-1.0
 
     # GDRCopy
     cd /tmp

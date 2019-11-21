@@ -6,7 +6,7 @@
 
 %post
     # Variables
-    export KERNEL_VER=4.15.0-52-generic
+    export KERNEL_VER=4.15.0-70-generic
 
     apt-get -y install \
             linux-image-${KERNEL_VER} \
