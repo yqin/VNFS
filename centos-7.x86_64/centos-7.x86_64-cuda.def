@@ -14,12 +14,15 @@
     # CUDA d
     cd /tmp
     wget -c https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
+    # WA for failing on yum-plugin-nvidia-0.5-1.el7.noarch.rpm.
+    wget -c wget http://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/yum-plugin-nvidia-0.5-1.el7.noarch.rpm
     yum -ty install \
             cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
     yum -y  update
     yum -ty install \
+            yum-plugin-nvidia-0.5-1.el7.noarch.rpm \
             cuda-drivers cuda
-    rm -f cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm
+    rm -f cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm yum-plugin-nvidia-0.5-1.el7.noarch.rpm
 
     # Build CUDA Driver
     dkms autoinstall -k ${KERNEL_VER}.${KERNEL_OS}.${ARCH}
