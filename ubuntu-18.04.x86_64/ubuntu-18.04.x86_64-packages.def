@@ -34,6 +34,7 @@
             libnuma-dev \
             make \
             manpages \
+            netplan \
             pkg-config \
             python-libxml2 \
             screen \
