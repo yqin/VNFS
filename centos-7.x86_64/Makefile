@@ -46,6 +46,9 @@ overlay-warewulf: overlay-packages
 overlay-cuda: overlay-kernel
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-cuda.def
 
+overlay-beegfs: overlay-beegfs
+	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-beegfs.def
+
 overlay-ifs: overlay-kernel
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-ifs.def
 
