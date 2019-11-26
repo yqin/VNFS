@@ -21,7 +21,7 @@
     yum -y  update
     yum -ty install \
             yum-plugin-nvidia-0.5-1.el7.noarch.rpm \
-            cuda-drivers cuda
+            cuda-drivers
     rm -f cuda-repo-rhel7-${CUDA_VER}-1.${ARCH}.rpm yum-plugin-nvidia-0.5-1.el7.noarch.rpm
 
     # Build CUDA Driver
