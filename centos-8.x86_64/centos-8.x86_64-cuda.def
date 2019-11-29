@@ -1,0 +1,34 @@
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%post
+    # Variables
+    export CUDA_VER=10.2.89
+    export KERNEL_VER=4.18.0-80.11.2
+    export KERNEL_OS=el8
+    export ARCH=x86_64
+
+    # CUDA
+    cd /tmp
+    wget -c https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-repo-rhel8-${CUDA_VER}-1.${ARCH}.rpm
+    dnf -y install \
+           cuda-repo-rhel8-${CUDA_VER}-1.${ARCH}.rpm
+    dnf -y --nobest update
+    dnf -y install \
+           cuda-drivers
+    rm -f cuda-repo-rhel8-${CUDA_VER}-1.${ARCH}.rpm
+
+    # Build CUDA Driver
+    dkms autoinstall -k ${KERNEL_VER}.${KERNEL_OS}_0.${ARCH}
+    rm -rf /var/lib/dkms/nvidia
+
+%post
+    # Yum
+    dnf clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

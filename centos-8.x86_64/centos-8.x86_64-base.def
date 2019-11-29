@@ -1,0 +1,76 @@
+BootStrap: yum
+OSVersion: 8
+MirrorURL: http://mirror.enzu.com/centos/%{OSVERSION}/BaseOS/$basearch/os
+Include: dnf dnf-utils
+
+
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%post
+    dnf config-manager --enable PowerTools
+    dnf -y install \
+           epel-release
+    dnf -y --nobest update
+    dnf -y install \
+           chrony \
+           createrepo \
+           cronie \
+           crontabs \
+           e2fsprogs \
+           ethtool \
+           gzip \
+           hwloc \
+           initscripts \
+           iproute \
+           iputils \
+           irqbalance \
+           less \
+           libcgroup-pam \
+           net-tools \
+           network-scripts \
+           nfs-utils \
+           numactl \
+           openssh \
+           openssh-clients \
+           openssh-server \
+           pam \
+           parted \
+           pciutils \
+           psmisc \
+           python3-dnf-plugins-extras-versionlock \
+           rsync \
+           rsyslog \
+           selinux-policy-targeted \
+           strace \
+           sudo \
+           tar \
+           vim-minimal \
+           wget \
+           which \
+           words \
+           yum
+
+%post
+    # Fix ping
+    chmod 4755 /usr/bin/ping
+
+    # Root ssh
+    mkdir -p /root/.ssh
+    chown root:root /root/.ssh
+    chmod 700 /root/.ssh
+
+    # Mount points
+    mkdir -p /global/home /global/home/groups /global/home/users /global/scratch /global/software /global/archive /local
+    chown root:root /global/home /global/home/groups /global/home/users /global/scratch /global/software /global/archive /local
+    chmod 755 /global/home /global/home/groups /global/home/users /global/scratch /global/software /global/archive /local
+
+    # Yum
+    dnf clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
