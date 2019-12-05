@@ -6,7 +6,7 @@
 
 %post
     # Variables
-    export CUDA_VER=10.1.243
+    export CUDA_VER=10.2.89
     export KERNEL_VER=3.10.0-1062.4.1
     export KERNEL_OS=el7
     export ARCH=x86_64
