@@ -6,6 +6,7 @@
 
 %post
     # Variables
+    export PMIX_VER=2.2.3
     export SLURM_VER=19.05.3-2
     export NHC_VER=1.4.2
     export KERNEL_OS=el7
@@ -17,13 +18,20 @@
             munge-devel \
             pam-devel
 
+    # PMIx
+    cd /tmp
+    wget -c https://github.com/openpmix/openpmix/releases/download/v${PMIX_VER}/pmix-${PMIX_VER}.tar.bz2
+    rpmbuild -tb --define "_topdir /tmp/rpmbuild" --clean pmix-${PMIX_VER}.tar.bz2
+    yum -ty install \
+            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/pmix-${PMIX_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    rm -rf /tmp/rpmbuild pmix-${PMIX_VER}.tar.bz2
+
     # Slurm
     cd /tmp
     wget -c https://download.schedmd.com/slurm/slurm-${SLURM_VER}.tar.bz2
     rpmbuild -tb --define "_topdir /tmp/rpmbuild" --clean slurm-${SLURM_VER}.tar.bz2
     yum -ty install \
             /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-${SLURM_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-libpmi-${SLURM_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
             /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-pam_slurm-${SLURM_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
             /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-slurmd-${SLURM_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm
     rm -rf /tmp/rpmbuild slurm-${SLURM_VER}.tar.bz2
