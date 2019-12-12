@@ -13,6 +13,10 @@
     export KERNEL_OS=el7
     export KERNEL_ARCH=x86_64
 
+    # Dependencies
+    yum -ty install \
+            device-mapper-multipath
+
     # SPL
     cd /tmp
     wget -c https://github.com/zfsonlinux/zfs/releases/download/zfs-${ZFS_VER}/spl-${SPL_VER}.tar.gz
@@ -56,8 +60,9 @@
     cd lustre-${LUSTRE_VER}
     ./configure --enable-server --disable-ldiskfs --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --with-o2ib=/usr/src/ofa_kernel/default
     make -j16 rpms
+    # To fix a symbol dependency issue
+    rpm -ihv --nodeps kmod-lustre-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
     yum -ty install \
-            kmod-lustre-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
             kmod-lustre-osd-zfs-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
             lustre-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
             lustre-iokit-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
