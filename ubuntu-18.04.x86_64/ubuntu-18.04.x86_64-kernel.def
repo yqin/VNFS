@@ -9,8 +9,9 @@
     export KERNEL_VER=4.15.0-52-generic
 
     apt-get -y install \
-            linux-image-${KERNEL_VER} \
-            linux-headers-${KERNEL_VER}
+            linux-firmware \
+            linux-headers-${KERNEL_VER} \
+            linux-image-${KERNEL_VER}
 
 %post
     # APT
