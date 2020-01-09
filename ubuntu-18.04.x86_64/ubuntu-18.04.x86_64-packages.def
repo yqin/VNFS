@@ -15,6 +15,7 @@
             bison \
             build-essential \
             bzip2 \
+            dmidecode \
             emacs \
             environment-modules \
             flex \

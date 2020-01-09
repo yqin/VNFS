@@ -67,6 +67,7 @@ mstflint=y
 mft=y
 srptools=n
 ibutils=y
+ibutils2=y
 infiniband-diags=y
 infiniband-diags-compat=y
 qperf=n
