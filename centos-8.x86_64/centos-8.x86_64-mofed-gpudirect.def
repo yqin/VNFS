@@ -34,7 +34,7 @@
 
 %post
     # Yum
-    yum clean all
+    dnf clean all
     rm -rf /var/lib/yum/yumdb/*
 
     # Misc

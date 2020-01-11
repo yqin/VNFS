@@ -7,7 +7,7 @@
 %post
     # Variables
     export PMIX_VER=2.2.3
-    export SLURM_VER=19.05.4
+    export SLURM_VER=19.05.5
     export NHC_VER=1.4.2
     export KERNEL_OS=el8
     export KERNEL_ARCH=x86_64
@@ -22,8 +22,8 @@
     cd /tmp
     wget -c https://github.com/openpmix/openpmix/releases/download/v${PMIX_VER}/pmix-${PMIX_VER}.tar.bz2
     rpmbuild -tb --define "_topdir /tmp/rpmbuild" --clean pmix-${PMIX_VER}.tar.bz2
-    yum -ty install \
-            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/pmix-${PMIX_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    dnf -y install \
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/pmix-${PMIX_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
     rm -rf /tmp/rpmbuild pmix-${PMIX_VER}.tar.bz2
 
     # Slurm

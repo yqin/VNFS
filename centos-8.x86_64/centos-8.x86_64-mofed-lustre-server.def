@@ -20,10 +20,10 @@
     cd spl-${SPL_VER}
     ./configure --with-spec=redhat --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}_0.${KERNEL_ARCH}
     make pkg-utils pkg-kmod
-    yum -ty install \
-            kmod-spl-${SPL_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            kmod-spl-devel-${SPL_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            spl-${SPL_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+    dnf -y install \
+           kmod-spl-${SPL_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           kmod-spl-devel-${SPL_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           spl-${SPL_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
     cd ../
     rm -rf spl-${SPL_VER} spl-${SPL_VER}.tar.gz
 
@@ -34,15 +34,15 @@
     cd zfs-${ZFS_VER}
     ./configure --with-spec=redhat --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}_0.${KERNEL_ARCH}
     make pkg-utils pkg-kmod
-    yum -ty install \
-            kmod-zfs-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            kmod-zfs-devel-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            libnvpair1-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            libuutil1-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            libzfs2-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            libzfs2-devel-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            libzpool2-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            zfs-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    dnf -y install \
+           kmod-zfs-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           kmod-zfs-devel-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           libnvpair1-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           libuutil1-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           libzfs2-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           libzfs2-devel-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           libzpool2-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           zfs-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
     cd ../
     rm -rf zfs-${ZFS_VER} zfs-${ZFS_VER}.tar.gz
     systemctl disable zfs-import-cache.service
@@ -56,19 +56,19 @@
     cd lustre-${LUSTRE_VER}
     ./configure --enable-server --disable-ldiskfs --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}_0.${KERNEL_ARCH} --with-o2ib=/usr/src/ofa_kernel/default
     make -j16 rpms
-    yum -ty install \
-            kmod-lustre-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            kmod-lustre-osd-zfs-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            lustre-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            lustre-iokit-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            lustre-osd-zfs-mount-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            lustre-resource-agents-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    dnf -y install \
+           kmod-lustre-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           kmod-lustre-osd-zfs-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           lustre-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           lustre-iokit-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           lustre-osd-zfs-mount-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           lustre-resource-agents-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
     cd ../
     rm -rf lustre-${LUSTRE_VER} lustre-${LUSTRE_VER}-1.src.rpm lustre-${LUSTRE_VER}.tar.gz kmp-lustre-* lustre.spec
 
 %post
     # Yum
-    yum clean all
+    dnf clean all
     rm -rf /var/lib/yum/yumdb/*
 
     # Misc

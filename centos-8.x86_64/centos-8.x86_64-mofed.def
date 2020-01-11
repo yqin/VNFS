@@ -6,7 +6,7 @@
 
 %post
     # Variables
-    export MOFED_VER=4.7-1.0.0.1
+    export MOFED_VER=4.7-3.2.9.0
     export OS=rhel8.0
     export KERNEL_VER=4.18.0-80.11.2
     export KERNEL_OS=el8
@@ -66,7 +66,7 @@ perftest=y
 mstflint=y
 mft=y
 srptools=n
-ibutils=y
+ibutils=n
 ibutils2=y
 infiniband-diags=y
 infiniband-diags-compat=y
@@ -88,24 +88,7 @@ EOF
     wget -c http://www.mellanox.com/downloads/ofed/MLNX_OFED-${MOFED_VER}/MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
     tar zxvpf MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
     cd MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}
-
-    # TBD: This command will fail for now due to /usr/lib/rpm/redhat/brp-mangle-shebangs policy. Need to workaround it first.
-    #      echo >&2 "*** ERROR: ambiguous python shebang in $path: #!$orig_shebang. Change it to python3 (or python2) explicitly."
-    #      line# 135: fail=1 -> #fail=1
-    ln -s /bin/python3 /bin/python
-    sed -i '135s/fail=1/#fail=1/' /usr/lib/rpm/redhat/brp-mangle-shebangs
     ./mlnxofedinstall --distro rhel8.0 --kernel ${KVERSION} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
-    sed -i '135s/#fail=1/fail=1/' /usr/lib/rpm/redhat/brp-mangle-shebangs
-    rm -f /bin/python
-
-    # Fix kernel modules location
-    dnf remove -y kmod-mlnx-ofa_kernel kmod-kernel-mft-mlnx kmod-knem kmod-rshim
-    export MOFED_INS_DIR=/tmp/MLNX_OFED_LINUX-${MOFED_VER}-${KVERSION}/MLNX_OFED_LINUX-${MOFED_VER}-${OS}-ext/RPMS/COMMON
-    dnf -y install \
-           ${MOFED_INS_DIR}/kernel-mft-4.13.0-102.kver.4.18.0_80.11.2.el8_0.x86_64.x86_64.rpm \
-           ${MOFED_INS_DIR}/knem-modules-1.1.3.90mlnx1-OFED.4.6.2.0.8.1.g8d875ee.kver.4.18.0_80.11.2.el8_0.x86_64.x86_64.rpm \
-           ${MOFED_INS_DIR}/mlnx-ofa_kernel-modules-4.7-OFED.4.7.1.0.0.1.g1c4bf42.kver.4.18.0_80.11.2.el8_0.x86_64.x86_64.rpm \
-           ${MOFED_INS_DIR}/rshim-1.8-0.g463f780.kver.4.18.0_80.11.2.el8_0.x86_64.x86_64.rpm
 
 %post
     # Yum

@@ -126,6 +126,7 @@
            plymouth \
            policycoreutils-devel \
            popt-devel \
+           python2 \
            python3 \
            readline-devel \
            rpm-build \
