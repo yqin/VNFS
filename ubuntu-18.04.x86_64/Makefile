@@ -52,7 +52,7 @@ cleanup:
 
 
 vnfs:
-	sudo wwvnfs -c $(CHROOTDIR) -y $(VNFSNAME)-$(TAG)
+	sudo wwvnfs -c $(CHROOTDIR) $(VNFSNAME)-$(TAG)
 
 bootstrap:
 	sudo wwbootstrap -c $(CHROOTDIR) $(KERNEL_VER)
