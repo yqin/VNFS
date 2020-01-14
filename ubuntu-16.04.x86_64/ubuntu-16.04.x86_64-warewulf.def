@@ -10,7 +10,7 @@
     /usr/bin/cluster-env /usr/bin
 
 %files
-    /global/software/centos-7/sources/warewulf/warewulf-monitor-legacy/usr/* /usr
+    /global/software/centos-7/sources/warewulf-2.9/warewulf-monitor-legacy/usr/* /usr
 
 %post
     # Fix wulfd
