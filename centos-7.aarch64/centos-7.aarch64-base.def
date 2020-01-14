@@ -67,16 +67,13 @@ Include: yum
     chmod 700 /root/.ssh
 
     # Mount points
-    mkdir -p /global/home /global/home/groups /global/home/users /global/scratch /global/software /local
-    chown root:root /global/home /global/home/groups /global/home/users /global/scratch /global/software /local
-    chmod 755 /global/home /global/home/groups /global/home/users /global/scratch /global/software /local
+    mkdir -p /global/home /global/home/groups /global/home/users /global/scratch /global/software /global/archive /local
+    chown root:root /global/home /global/home/groups /global/home/users /global/scratch /global/software /global/archive /local
+    chmod 755 /global/home /global/home/groups /global/home/users /global/scratch /global/software /global/archive /local
 
     # Yum
     yum clean all
     rm -rf /var/lib/yum/yumdb/*
 
     # Misc
-    truncate -s 0 /etc/passwd
-    truncate -s 0 /etc/shadow
-    truncate -s 0 /etc/group
-    truncate -s 0 /etc/gshadow
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

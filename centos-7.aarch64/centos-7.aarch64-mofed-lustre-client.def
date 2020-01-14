@@ -6,10 +6,10 @@
 
 %post
     # Variables
-    export LUSTRE_VER=2.10.5
+    export LUSTRE_VER=2.12.3
     export OS=el7
-    export KERNEL_VER=4.14.0-49.13.1
-    export KERNEL_OS=el7a
+    export KERNEL_VER=4.18.0-147.0.3
+    export KERNEL_OS=el7
     export KERNEL_ARCH=aarch64
 
     # Lustre Client
@@ -20,10 +20,11 @@
     cd lustre-${LUSTRE_VER}
     ./configure --disable-server --enable-client --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --with-o2ib=/usr/src/ofa_kernel/default
     make -j16 rpms
+    # To fix a symbol dependency issue
+    rpm -ihv --nodeps kmod-lustre-client-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
     yum -ty install \
-            kmod-lustre-client-${LUSTRE_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            lustre-client-${LUSTRE_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            lustre-iokit-${LUSTRE_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+            lustre-client-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+            lustre-iokit-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
     cd ../
     rm -rf lustre-${LUSTRE_VER} lustre-${LUSTRE_VER}-1.src.rpm lustre-${LUSTRE_VER}.tar.gz kmp-lustre-* lustre.spec
 
@@ -33,7 +34,4 @@
     rm -rf /var/lib/yum/yumdb/*
 
     # Misc
-    truncate -s 0 /etc/passwd
-    truncate -s 0 /etc/shadow
-    truncate -s 0 /etc/group
-    truncate -s 0 /etc/gshadow
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

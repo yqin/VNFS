@@ -6,24 +6,12 @@
 
 %post
     # Variables
-    export MOFED_VER=4.4-2.0.7.0
-    export KNEM_VER=1.1.3
-    export OS=rhel7.5alternate
-    export KERNEL_VER=4.14.0-49.13.1
-    export KERNEL_OS=el7a
+    export MOFED_VER=4.7-3.2.9.0
+    export OS=rhel7.6alternate
+    export KERNEL_VER=4.18.0-147.0.3
+    export KERNEL_OS=el7
     export KERNEL_ARCH=aarch64
-
-    # Dependencies
-    yum -ty install \
-            gcc \
-            libnl3 \
-            lsof \
-            make \
-            python-devel \
-            redhat-rpm-config \
-            rpm-build \
-            tcl \
-            tk
+    export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
 
     # Mellanox OFED for the specific kernel
     cd /tmp
@@ -31,8 +19,13 @@
 mlnx-ofa_kernel=y
 mlnx-ofa_kernel-devel=y
 kernel-mft-mlnx=y
-knem-mlnx=n
+knem=y
+kernel-mft-mlnx=y
 iser=n
+srp=n
+isert=n
+mlnx-nvme=n
+rshim=y
 libibverbs=y
 libibverbs-devel=y
 libibverbs-devel-static=y
@@ -69,7 +62,7 @@ mstflint=y
 mft=y
 srptools=n
 ibutils2=y
-ibutils=n
+ibutils=y
 cc_mgr=y
 dump_pr=y
 ar_mgr=y
@@ -81,6 +74,11 @@ mxm=n
 ucx=n
 ucx-devel=n
 ucx-static=n
+ucx-cma=n
+ucx-ib=n
+ucx-ib-cm=n
+ucx-rdmacm=n
+ucx-knem=n
 sharp=n
 mpi-selector=n
 openmpi=n
@@ -96,29 +94,7 @@ EOF
     #wget -c http://content.mellanox.com/ofed/MLNX_OFED-${MOFED_VER}/MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
     tar zxvpf MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
     cd MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}
-    ./mlnxofedinstall --kernel ${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
-
-    # KNEM
-    cd /tmp
-    wget -c http://gforge.inria.fr/frs/download.php/37186/knem-${KNEM_VER}.tar.gz
-    tar zxpvf knem-${KNEM_VER}.tar.gz
-    cd knem-${KNEM_VER}
-    ./configure --with-linux-release=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
-    cd driver/linux/
-    make
-    mkdir -p /lib/modules/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}/extra/knem
-    cp knem.ko /lib/modules/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}/extra/knem
-    depmod -a ${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
-    cd /tmp
-    rm -rf knem-${KNEM_VER} knem-${KNEM_VER}.tar.gz
-
-    cat > /etc/udev/rules.d/10-knem.rules << EOF
-KERNEL=="knem", MODE="0666", OPTIONS="last_rule"
-EOF
-
-    cat > /etc/modules-load.d/knem.conf << EOF
-knem
-EOF
+    ./mlnxofedinstall --kernel ${KVERSION} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
 
 %post
     # Yum
@@ -126,7 +102,4 @@ EOF
     rm -rf /var/lib/yum/yumdb/*
 
     # Misc
-    truncate -s 0 /etc/passwd
-    truncate -s 0 /etc/shadow
-    truncate -s 0 /etc/group
-    truncate -s 0 /etc/gshadow
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

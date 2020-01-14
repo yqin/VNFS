@@ -6,8 +6,8 @@
 
 %post
     # Add additional packages below that require specific kernel support
-    export KERNEL_VER=4.14.0-49.13.1
-    export KERNEL_OS=el7a
+    export KERNEL_VER=4.18.0-147.0.3
+    export KERNEL_OS=el7
     export KERNEL_ARCH=aarch64
     yum -ty install \
             kernel-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
@@ -27,7 +27,4 @@
     rm -rf /var/lib/yum/yumdb/*
 
     # Misc
-    truncate -s 0 /etc/passwd
-    truncate -s 0 /etc/shadow
-    truncate -s 0 /etc/group
-    truncate -s 0 /etc/gshadow
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
