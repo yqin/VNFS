@@ -6,8 +6,8 @@
 
 %post
     # Variables
-    export PMIX_VER=2.2.3
-    export SLURM_VER=19.05.5
+    export PMIX_VER=3.1.5
+    export SLURM_VER=20.02.0
     export NHC_VER=1.4.2
     export KERNEL_OS=el8
     export KERNEL_ARCH=x86_64
@@ -29,42 +29,12 @@
     # Slurm
     cd /tmp
     wget -c https://download.schedmd.com/slurm/slurm-${SLURM_VER}.tar.bz2
-
-    # Patch for el8
-    cat > slurm-el8.patch << EOF
---- slurm.spec.orig     2019-11-28 12:23:27.698838979 -0800
-+++ slurm.spec  2019-11-28 12:26:12.474896829 -0800
-@@ -62,7 +62,7 @@ Requires: munge
- %{?systemd_requires}
- BuildRequires: systemd
- BuildRequires: munge-devel munge-libs
--BuildRequires: python
-+BuildRequires: python%{?el8:3}
- BuildRequires: readline-devel
- Obsoletes: slurm-lua slurm-munge slurm-plugins
- 
-@@ -158,7 +158,7 @@ BuildRequires: ucx-devel
- #
- # Should unpackaged files in a build root terminate a build?
- # Uncomment if needed again.
--#%define _unpackaged_files_terminate_build      0
-+%define _unpackaged_files_terminate_build      0
- 
- # Slurm may intentionally include empty manifest files, which will
- # cause errors with rpm 4.13 and on. Turn that check off.
-EOF
-
-    ln -s /bin/python3 /bin/python
-    rpmbuild -ts --define "_topdir /tmp/rpmbuild" slurm-${SLURM_VER}.tar.bz2
-    rpm -i --define "_topdir /tmp/rpmbuild" /tmp/rpmbuild/SRPMS/slurm-${SLURM_VER}-1.${KERNEL_OS}.src.rpm
-    cat slurm-el8.patch | (cd /tmp/rpmbuild/SPECS ; patch -p0)
-    rpmbuild -bb --define "_topdir /tmp/rpmbuild" --clean /tmp/rpmbuild/SPECS/slurm.spec
+    rpmbuild -tb --define "_topdir /tmp/rpmbuild" slurm-${SLURM_VER}.tar.bz2
     dnf -y install \
            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-pam_slurm-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-slurmd-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
-    rm -rf /tmp/rpmbuild slurm-${SLURM_VER}.tar.bz2 slurm-el8.patch
-    rm -f /bin/python
+    rm -rf /tmp/rpmbuild slurm-${SLURM_VER}.tar.bz2
     systemctl enable munge
     systemctl enable slurmd
     mkdir -p /etc/slurm /var/spool/slurmd /var/log/munge /var/log/slurm

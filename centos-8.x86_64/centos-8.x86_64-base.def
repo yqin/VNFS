@@ -16,6 +16,7 @@ Include: dnf dnf-utils
            epel-release
     dnf -y --nobest update
     dnf -y install \
+           NetworkManager \
            chrony \
            createrepo \
            cronie \
@@ -31,7 +32,6 @@ Include: dnf dnf-utils
            less \
            libcgroup-pam \
            net-tools \
-           network-scripts \
            nfs-utils \
            numactl \
            openssh \

@@ -123,13 +123,15 @@
            perl-XML-LibXML \
            perl-XML-Parser \
            pixman-devel \
+           platform-python \
+           platform-python-devel \
            plymouth \
            policycoreutils-devel \
            popt-devel \
-           python2 \
-           python3 \
            readline-devel \
            rpm-build \
+           python2-devel \
+           python36-devel \
            screen \
            sqlite-devel \
            subversion \
