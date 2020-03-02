@@ -11,6 +11,7 @@ Include: dnf dnf-utils
     /etc/gshadow /etc
 
 %post
+    export LANG=C.utf8
     dnf config-manager --enable PowerTools
     dnf -y install \
            epel-release
@@ -23,6 +24,7 @@ Include: dnf dnf-utils
            crontabs \
            e2fsprogs \
            ethtool \
+           glibc-langpack-en \
            gzip \
            hwloc \
            initscripts \
@@ -55,6 +57,11 @@ Include: dnf dnf-utils
            yum
 
 %post
+    # Locale
+    echo "LANG=C.utf8" > /etc/locale.conf
+    chmod 644 /etc/locale.conf
+    yum remove -y glibc-langpack-zu
+
     # Fix ping
     chmod 4755 /usr/bin/ping
 
