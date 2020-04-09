@@ -50,6 +50,7 @@
            glibc-devel \
            gperf \
            graphviz-devel \
+           hostname \
            hwloc-devel \
            imake \
            ipmitool \
@@ -128,10 +129,10 @@
            plymouth \
            policycoreutils-devel \
            popt-devel \
-           readline-devel \
-           rpm-build \
            python2-devel \
            python36-devel \
+           readline-devel \
+           rpm-build \
            screen \
            sqlite-devel \
            subversion \

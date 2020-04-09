@@ -6,7 +6,7 @@
 
 %post
     # Variables
-    export MOFED_VER=4.7-3.2.9.0
+    export MOFED_VER=5.0-2.1.8.0
     export OS=rhel8.1
     export KERNEL_VER=4.18.0-147.5.1
     export KERNEL_OS=el8_1
@@ -16,40 +16,26 @@
     # Mellanox OFED for the specific kernel
     cd /tmp
     cat > ofed.conf << EOF
+ofed-scripts=y
 mlnx-ofa_kernel=y
 mlnx-ofa_kernel-devel=y
-knem=y
 kernel-mft-mlnx=y
+knem=y
 iser=n
 srp=n
 isert=n
-mlnx-nvme=n
+mlnx-rdma-rxe=n
 rshim=y
+rdma-core=y
 libibverbs=y
-libibverbs-devel=y
-libibverbs-devel-static=y
-libibverbs-utils=y
-libmlx4=y
-libmlx4-devel=y
-libmlx5=y
-libmlx5-devel=y
-librxe=y
-librxe-devel-static=y
-libibcm=y
-libibcm-devel=y
-libibumad=y
-libibumad-devel=y
-libibumad-static=y
-libibmad=y
-libibmad-devel=y
-libibmad-static=y
-ibsim=y
-ibacm=y
 librdmacm=y
+rdma-core-devel=y
+libibverbs-utils=y
+libibumad=y
+ibacm=y
 librdmacm-utils=y
-librdmacm-devel=y
-opensm=y
 opensm-libs=y
+opensm=y
 opensm-devel=y
 opensm-static=y
 dapl=y
@@ -59,24 +45,26 @@ dapl-utils=y
 perftest=y
 mstflint=y
 mft=y
-srptools=n
-ibutils=n
-ibutils2=y
+srp_daemon=n
 infiniband-diags=y
-infiniband-diags-compat=y
+ibutils2=y
+cc_mgr=y
+dump_pr=y
+ar_mgr=y
+ibdump=y
 qperf=n
-ofed-scripts=y
 ucx=n
 ucx-devel=n
+sharp=n
 ucx-cma=n
 ucx-ib=n
-ucx-ib-cm=n
 ucx-rdmacm=n
-ucx-knem=n
 mpi-selector=n
+hcoll=n
 openmpi=n
 mlnx-ethtool=y
 mlnx-iproute2=y
+mlnxofed-docs=y
 mpitests_openmpi=n
 EOF
 
@@ -84,6 +72,24 @@ EOF
     tar zxvpf MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
     cd MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}
     ./mlnxofedinstall --distro rhel8.1 --kernel ${KVERSION} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
+
+    # xpmem
+    cd /tmp
+    rm -rf /tmp/xpmem
+    git clone https://github.com/hjelmn/xpmem.git
+    cd xpmem
+    ./autogen.sh
+    ./configure --prefix=/opt/xpmem --with-kernelvers=${KVERSION} --with-kerneldir=/usr/src/kernels/${KVERSION}
+    make install
+    mv /opt/xpmem/lib/modules/${KVERSION}/xpmem.ko /usr/lib/modules/${KVERSION}/extra
+    rmdir /opt/xpmem/lib/modules/${KVERSION}
+    cp /opt/xpmem/etc/56-xpmem.rules /etc/udev/rules.d
+    depmod -a ${KVERSION}
+    cd /tmp
+    rm -rf /tmp/xpmem
+    # Put it here because existing knem does it this way, otherwise we should use /etc/modules-load.d, or udev
+    echo "/sbin/modprobe xpmem > /dev/null 2>&1" > /etc/sysconfig/modules/xpmem.modules
+    chmod 755 /etc/sysconfig/modules/xpmem.modules
 
 %post
     # Yum
