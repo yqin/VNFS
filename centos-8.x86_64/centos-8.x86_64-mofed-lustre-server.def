@@ -39,7 +39,7 @@
 
     # Lustre Server
     cd /tmp
-    wget -c https://downloads.hpdd.intel.com/public/lustre/lustre-${LUSTRE_VER}/${KERNEL_OS}/server/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
+    wget -c https://downloads.whamcloud.com/public/lustre/lustre-${LUSTRE_VER}/${KERNEL_OS}/server/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
     rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
     tar zxvpf lustre-${LUSTRE_VER}.tar.gz
     cd lustre-${LUSTRE_VER}

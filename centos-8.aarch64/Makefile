@@ -2,17 +2,17 @@
 BUILDDIR    := /var/chroots
 GITVERS     := $(shell git describe --always)
 TAG         ?= $(firstword $(MAKECMDGOALS))
-VNFSNAME    := centos-7.aarch64
+VNFSNAME    := centos-8.aarch64
 CHROOTDIR   := $(BUILDDIR)/$(VNFSNAME)-$(TAG)-$(GITVERS)
-KERNEL_VER  := 4.18.0-147.8.1.el7.aarch64
+KERNEL_VER  := 4.18.0-147.8.1.el8_1.aarch64
 
 
 all:
 	@ echo "Select a make target: generic, mofed, mofed-lustre"
 
 generic: base overlay-packages overlay-slurm cleanup
-mofed: base overlay-packages overlay-containers overlay-slurm overlay-mofed cleanup
-mofed-lustre: base overlay-packages overlay-containers overlay-slurm overlay-mofed overlay-mofed-lustre-client cleanup
+mofed: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-mofed cleanup
+mofed-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-mofed overlay-mofed-lustre-client cleanup
 
 base:
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-base.def

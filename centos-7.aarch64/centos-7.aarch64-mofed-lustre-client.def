@@ -1,20 +1,19 @@
 %files
-    /root/provision/passwd /etc
-    /root/provision/shadow /etc
-    /root/provision/group /etc
-    /root/provision/gshadow /etc
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
 
 %post
     # Variables
     export LUSTRE_VER=2.12.3
-    export OS=el7
-    export KERNEL_VER=4.18.0-147.0.3
+    export KERNEL_VER=4.18.0-147.8.1
     export KERNEL_OS=el7
     export KERNEL_ARCH=aarch64
 
     # Lustre Client
     cd /tmp
-    wget -c https://downloads.hpdd.intel.com/public/lustre/lustre-${LUSTRE_VER}/${OS}/client/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
+    wget -c https://downloads.whamcloud.com/public/lustre/lustre-${LUSTRE_VER}/${KERNEL_OS}/client/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
     rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
     tar zxvpf lustre-${LUSTRE_VER}.tar.gz
     cd lustre-${LUSTRE_VER}

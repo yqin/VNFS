@@ -5,10 +5,10 @@ Include: yum
 
 
 %files
-    /root/provision/passwd /etc
-    /root/provision/shadow /etc
-    /root/provision/group /etc
-    /root/provision/gshadow /etc
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
 
 %post
     yum -ty install \
@@ -52,7 +52,9 @@ Include: yum
             vim-minimal \
             wget \
             which \
-            words
+            words \
+            yum-plugin-versionlock \
+            yum-utils
 
 %post
     # Fix ping

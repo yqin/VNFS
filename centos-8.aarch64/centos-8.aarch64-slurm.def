@@ -6,33 +6,34 @@
 
 %post
     # Variables
-    export PMIX_VER=2.2.3
-    export SLURM_VER=19.05.5
+    export PMIX_VER=3.1.5
+    export SLURM_VER=20.02.0
     export NHC_VER=1.4.2
-    export KERNEL_OS=el7
+    export KERNEL_OS=el8
     export KERNEL_ARCH=aarch64
+
+    # Dependencies
+    dnf -y install \
+           munge \
+           munge-devel \
+           pam-devel
 
     # PMIx
     cd /tmp
     wget -c https://github.com/openpmix/openpmix/releases/download/v${PMIX_VER}/pmix-${PMIX_VER}.tar.bz2
     rpmbuild -tb --define "_topdir /tmp/rpmbuild" --clean pmix-${PMIX_VER}.tar.bz2
-    yum -ty install \
-            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/pmix-${PMIX_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    dnf -y install \
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/pmix-${PMIX_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
     rm -rf /tmp/rpmbuild pmix-${PMIX_VER}.tar.bz2
 
     # Slurm
-    # Dependencies
-    yum -ty install \
-            munge \
-            munge-devel \
-            pam-devel
     cd /tmp
     wget -c https://download.schedmd.com/slurm/slurm-${SLURM_VER}.tar.bz2
-    rpmbuild -tb --define "_topdir /tmp/rpmbuild" --clean slurm-${SLURM_VER}.tar.bz2
-    yum -ty install \
-            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-pam_slurm-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-            /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-slurmd-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    rpmbuild -tb --define "_topdir /tmp/rpmbuild" slurm-${SLURM_VER}.tar.bz2
+    dnf -y install \
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-pam_slurm-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-slurmd-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
     rm -rf /tmp/rpmbuild slurm-${SLURM_VER}.tar.bz2
     systemctl enable munge
     systemctl enable slurmd
@@ -48,15 +49,18 @@
 
     # NHC
     cd /tmp
-    wget -c https://github.com/mej/nhc/releases/download/${NHC_VER}/lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.src.rpm
-    rpmbuild --rebuild --define "_topdir /tmp/rpmbuild" --nocheck --clean lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.src.rpm
-    yum -ty install \
-            /tmp/rpmbuild/RPMS/noarch/lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.noarch.rpm
-    rm -rf /tmp/rpmbuild lbnl-nhc-${NHC_VER}-1.${KERNEL_OS}.src.rpm
+    wget -c https://github.com/mej/nhc/archive/${NHC_VER}.tar.gz -O nhc-${NHC_VER}.tar.gz
+    tar zxpvf nhc-${NHC_VER}.tar.gz
+    cd nhc-${NHC_VER}
+    ./autogen.sh
+    ./configure --prefix=/
+    make install
+    cd /tmp
+    rm -rf nhc-${NHC_VER}.tar.gz nhc-${NHC_VER}
 
 %post
     # Yum
-    yum clean all
+    dnf clean all
     rm -rf /var/lib/yum/yumdb/*
 
     # Misc

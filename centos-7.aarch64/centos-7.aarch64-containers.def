@@ -1,0 +1,19 @@
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%post
+    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    yum -ty install \
+            docker-ce \
+            singularity
+
+%post
+    # Yum
+    yum clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
