@@ -78,6 +78,7 @@ Include: dnf dnf-utils
     # Yum
     dnf clean all
     rm -rf /var/lib/yum/yumdb/*
+    systemctl disable dnf-makecache.timer
 
     # Misc
     rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
