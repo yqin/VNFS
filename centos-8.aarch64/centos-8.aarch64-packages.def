@@ -49,6 +49,7 @@
            glib2-devel \
            glibc-devel \
            gperf \
+           gperftools-devel \
            graphviz-devel \
            hostname \
            hwloc-devel \
