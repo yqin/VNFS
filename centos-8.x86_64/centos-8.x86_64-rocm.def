@@ -13,14 +13,14 @@ baseurl=http://repo.radeon.com/rocm/centos8/rpm
 enabled=1
 gpgcheck=0
 EOF
-    yum -ty install \
-            rock-dkms \
-            rock-dkms-firmware \
-            rocm-smi
+    dnf -y install \
+           rock-dkms \
+           rock-dkms-firmware \
+           rocm-smi
 
 %post
     # Yum
-    yum clean all
+    dnf clean all
     rm -rf /var/lib/yum/yumdb/*
 
     # Misc
