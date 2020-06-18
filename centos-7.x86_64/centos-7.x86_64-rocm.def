@@ -17,6 +17,7 @@ EOF
             rock-dkms \
             rock-dkms-firmware \
             rocm-smi
+    rm -rf /var/lib/dkms/amdgpu
 
 %post
     # Yum
