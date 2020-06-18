@@ -1,0 +1,27 @@
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%post
+    # ROCM
+    cat > /etc/yum.repos.d/rocm.repo << EOF
+[ROCm]
+name=ROCm
+baseurl=http://repo.radeon.com/rocm/centos8/rpm
+enabled=1
+gpgcheck=0
+EOF
+    yum -ty install \
+            rock-dkms \
+            rock-dkms-firmware \
+            rocm-smi
+
+%post
+    # Yum
+    yum clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

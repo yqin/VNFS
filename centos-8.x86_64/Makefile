@@ -41,6 +41,9 @@ overlay-warewulf: overlay-packages
 overlay-cuda: overlay-kernel
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-cuda.def
 
+overlay-rocm: overlay-kernel
+	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-rocm.def
+
 overlay-mofed: overlay-kernel
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-mofed.def
 
