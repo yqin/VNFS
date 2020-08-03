@@ -7,19 +7,15 @@
 %post
     # Variables
     export CUDA_VER=10.2.89
-    export KERNEL_VER=4.18.0-147.5.1
-    export KERNEL_OS=el8_1
+    export KERNEL_VER=4.18.0-193.14.2
+    export KERNEL_OS=el8_2
     export ARCH=x86_64
 
     # CUDA
-    cd /tmp
-    wget -c https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-repo-rhel8-${CUDA_VER}-1.${ARCH}.rpm
-    dnf -y install \
-           cuda-repo-rhel8-${CUDA_VER}-1.${ARCH}.rpm
+    wget -O /etc/yum.repos.d/cuda-rhel8.repo https://developer.download.nvidia.com/compute/cuda/repos/rhel8/${ARCH}/cuda-rhel8.repo
     dnf -y --nobest update
     dnf -y install \
            cuda-drivers
-    rm -f cuda-repo-rhel8-${CUDA_VER}-1.${ARCH}.rpm
 
     # Build CUDA Driver
     dkms autoinstall -k ${KERNEL_VER}.${KERNEL_OS}.${ARCH}
