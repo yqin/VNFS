@@ -6,8 +6,8 @@
 
 %post
     # Add additional packages below that require specific kernel support
-    export KERNEL_VER=4.18.0-147.8.1
-    export KERNEL_OS=el8_1
+    export KERNEL_VER=4.18.0-193.14.2
+    export KERNEL_OS=el8_2
     export KERNEL_ARCH=aarch64
     dnf -y install \
            kernel-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
@@ -21,10 +21,6 @@
 %post
     # Enable cpupower service
     systemctl enable cpupower.service
-
-    # Fix kernel location for wwbootstrap
-    cd /boot
-    ln -s ./*/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}/linux /boot/vmlinuz-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
 
     # Yum
     dnf clean all
