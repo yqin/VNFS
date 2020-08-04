@@ -4,11 +4,11 @@ GITVERS     := $(shell git describe --always)
 TAG         ?= $(firstword $(MAKECMDGOALS))
 VNFSNAME    := centos-7.x86_64
 CHROOTDIR   := $(BUILDDIR)/$(VNFSNAME)-$(TAG)-$(GITVERS)
-KERNEL_VER  := 3.10.0-1062.9.1.el7.x86_64
+KERNEL_VER  := 3.10.0-1127.18.2.el7.x86_64
 
 
 all:
-	@ echo "Select a make target: generic, mofed, mofed-cuda, mofed-cuda-lustre, mofed-lustre, mofed-lustre-server, ifs, ifs-cuda, ifs-cuda-lustre, ifs-lustre, ifs-lustre-server"
+	@ echo "Select a make target: generic, mofed, mofed-accel, mofed-accel-lustre, mofed-lustre, mofed-lustre-server, ifs, ifs-cuda, ifs-cuda-lustre, ifs-lustre, ifs-lustre-server"
 
 generic: base overlay-packages overlay-slurm overlay-warewulf cleanup
 ifs: base overlay-packages overlay-kernel overlay-containers overlay-kvm overlay-slurm overlay-warewulf overlay-ifs cleanup
@@ -17,8 +17,8 @@ ifs-cuda-lustre: base overlay-packages overlay-kernel overlay-containers overlay
 ifs-lustre: base overlay-packages overlay-kernel overlay-containers overlay-kvm overlay-slurm overlay-warewulf overlay-ifs overlay-ifs-lustre-client cleanup
 ifs-lustre-server: base overlay-packages overlay-kernel overlay-ifs overlay-ifs-lustre-server cleanup
 mofed: base overlay-packages overlay-kernel overlay-containers overlay-kvm overlay-slurm overlay-warewulf overlay-mofed cleanup
-mofed-cuda: base overlay-packages overlay-kernel overlay-containers overlay-kvm overlay-slurm overlay-warewulf overlay-cuda overlay-mofed overlay-mofed-gpudirect cleanup
-mofed-cuda-lustre: base overlay-packages overlay-kernel overlay-containers overlay-kvm overlay-slurm overlay-warewulf overlay-cuda overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
+mofed-accel: base overlay-packages overlay-kernel overlay-containers overlay-kvm overlay-slurm overlay-warewulf overlay-cuda overlay-rocm overlay-mofed overlay-mofed-gpudirect cleanup
+mofed-accel-lustre: base overlay-packages overlay-kernel overlay-containers overlay-kvm overlay-slurm overlay-warewulf overlay-cuda overlay-rocm overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
 mofed-lustre: base overlay-packages overlay-kernel overlay-containers overlay-kvm overlay-slurm overlay-warewulf overlay-mofed overlay-mofed-lustre-client cleanup
 mofed-lustre-server: base overlay-packages overlay-kernel overlay-mofed overlay-mofed-lustre-server cleanup
 

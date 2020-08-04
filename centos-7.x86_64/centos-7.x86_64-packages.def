@@ -139,6 +139,7 @@
             python-ethtool \
             python-iniparse \
             python-urlgrabber \
+            python3 \
             rcs \
             readline-devel \
             rpm-build \
