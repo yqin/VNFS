@@ -1,3 +1,9 @@
+BootStrap: yum
+OSVersion: 8
+MirrorURL: http://mirror.enzu.com/centos/%{OSVERSION}/BaseOS/$basearch/os
+Include: dnf dnf-utils
+
+
 %files
     /etc/passwd /etc
     /etc/shadow /etc
