@@ -13,6 +13,7 @@
            kernel-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
            kernel-devel-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
            kernel-headers-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
+           kernel-modules-extra-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
            kernel-rpm-macros \
            kernel-tools-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
            perf-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}

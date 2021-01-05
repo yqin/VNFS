@@ -39,6 +39,7 @@
            gcc \
            gcc-c++ \
            gcc-gfortran \
+           gdb \
            gdk-pixbuf2-devel \
            gettext-devel \
            ghostscript-devel \
@@ -70,6 +71,7 @@
            libmount-devel \
            libmpc-devel \
            libnl3 \
+           libnl3-devel \
            libpciaccess-devel \
            libpng-devel \
            libselinux-devel \

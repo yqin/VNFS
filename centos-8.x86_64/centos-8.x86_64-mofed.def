@@ -72,15 +72,15 @@ EOF
     cd MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}
     ./mlnxofedinstall --distro ${OS} --kernel ${KVERSION} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
 
-    # rshim
-    cd /tmp
-    rm -rf /tmp/rshim
-    git clone https://github.com/Mellanox/rshim.git
-    cd rshim
-    make -C /lib/modules/${KVERSION}/build M=$PWD
-    make -C /lib/modules/${KVERSION}/build M=$PWD INSTALL_MOD_DIR=extra/rshim modules_install
-    cd /tmp
-    rm -rf /tmp/rshim
+    ## rshim
+    #cd /tmp
+    #rm -rf /tmp/rshim
+    #git clone https://github.com/Mellanox/rshim.git
+    #cd rshim
+    #make -C /lib/modules/${KVERSION}/build M=$PWD
+    #make -C /lib/modules/${KVERSION}/build M=$PWD INSTALL_MOD_DIR=extra/rshim modules_install
+    #cd /tmp
+    #rm -rf /tmp/rshim
 
     # xpmem
     cd /tmp
