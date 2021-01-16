@@ -6,9 +6,9 @@
 
 %post
     # Variables
-    export NVIDIA_PEER_MEMORY_VER=1.0-8
-    export GDRCOPY_VER=2.0
-    export KERNEL_VER=3.10.0-1127.18.2
+    export NVIDIA_PEER_MEMORY_VER=1.1
+    export GDRCOPY_VER=2.1
+    export KERNEL_VER=3.10.0-1160.11.1
     export KERNEL_OS=el7
     export KERNEL_ARCH=x86_64
 
@@ -16,10 +16,10 @@
     cd /tmp
     wget -c https://www.mellanox.com/downloads/ofed/nvidia-peer-memory_${NVIDIA_PEER_MEMORY_VER}.tar.gz
     tar zxvpf nvidia-peer-memory_${NVIDIA_PEER_MEMORY_VER}.tar.gz
-    cd nvidia-peer-memory-1.0
+    cd nvidia-peer-memory-${NVIDIA_PEER_MEMORY_VER}
     make KVER=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} all install
     cd /tmp
-    rm -rf nvidia-peer-memory-1.0 nvidia-peer-memory_${NVIDIA_PEER_MEMORY_VER}.tar.gz
+    rm -rf nvidia-peer-memory-${NVIDIA_PEER_MEMORY_VER} nvidia-peer-memory_${NVIDIA_PEER_MEMORY_VER}.tar.gz
 
     # GDRCopy
     cd /tmp
