@@ -6,10 +6,10 @@
 
 %post
     # Variables
-    export LUSTRE_VER=2.12.5
-    export KERNEL_VER=4.18.0-193.14.2
+    export LUSTRE_VER=2.12.6
+    export KERNEL_VER=4.18.0-240.1.1
     export KERNEL_OS=el8
-    export KERNEL_OS_SUBVER=_2
+    export KERNEL_OS_SUBVER=_3
     export KERNEL_ARCH=x86_64
 
     # Dependencies
@@ -23,8 +23,12 @@
     tar zxvpf lustre-${LUSTRE_VER}.tar.gz
     cd lustre-${LUSTRE_VER}
 
-    # Patch for rdma_reject API change
-    sed -i '/rdma_reject/ s/);/, IB_CM_REJ_CONSUMER_DEFINED);/g' lnet/klnds/o2iblnd/o2iblnd_cb.c
+    # Patch for FMR-pool support
+    wget "https://review.whamcloud.com/changes/40287/revisions/6fd5c8bef83aaffaa8c4ff38cbd1c0b630ba2556/patch?download" -O lustre.patch.base64
+    base64 -d lustre.patch.base64 > lustre.patch
+    patch -p1 < lustre.patch
+    sed -i '368d' lnet/klnds/o2iblnd/o2iblnd.h
+    sh autogen.sh
 
     ./configure --disable-server --enable-client --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}${KERNEL_OS_SUBVER}.${KERNEL_ARCH} --with-o2ib=/usr/src/ofa_kernel/default
     make -j16 rpms

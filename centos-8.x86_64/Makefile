@@ -4,7 +4,7 @@ GITVERS     := $(shell git describe --always)
 TAG         ?= $(firstword $(MAKECMDGOALS))
 VNFSNAME    := centos-8.x86_64
 CHROOTDIR   := $(BUILDDIR)/$(VNFSNAME)-$(TAG)-$(GITVERS)
-KERNEL_VER  := 4.18.0-193.14.2.el8_2.x86_64
+KERNEL_VER  := 4.18.0-240.1.1.el8_3.x86_64
 
 
 all:

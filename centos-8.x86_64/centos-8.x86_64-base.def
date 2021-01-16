@@ -1,6 +1,6 @@
 BootStrap: yum
 OSVersion: 8
-MirrorURL: http://mirror.enzu.com/centos/%{OSVERSION}/BaseOS/$basearch/os
+MirrorURL: http://mirror.centos.org/centos/%{OSVERSION}/BaseOS/$basearch/os
 Include: dnf dnf-utils
 
 
@@ -12,7 +12,7 @@ Include: dnf dnf-utils
 
 %post
     export LANG=C.utf8
-    dnf config-manager --enable PowerTools
+    dnf config-manager --enable powertools
     dnf -y install \
            epel-release
     dnf -y --nobest update
