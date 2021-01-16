@@ -71,6 +71,7 @@ EOF
     tar zxvpf MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
     cd MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}
     ./mlnxofedinstall --distro ${OS} --kernel ${KVERSION} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
+    systemctl disable rshim.service
 
     # xpmem
     cd /tmp
