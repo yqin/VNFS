@@ -84,7 +84,7 @@ EOF
     ./configure --prefix=/opt/xpmem --with-kernelvers=${KVERSION} --with-kerneldir=/usr/src/kernels/${KVERSION}
     make install
     mkdir -p /usr/lib/modules/${KVERSION}/extra/xpmem
-    mv /opt/xpmem/lib/modules/${KVERSION}/xpmem.ko /usr/lib/modules/${KVERSION}/extra/xpmem/
+    mv /opt/xpmem/lib/modules/${KVERSION}/kernel/xpmem/xpmem.ko /usr/lib/modules/${KVERSION}/extra/xpmem/
     rm -rf /opt/xpmem/lib/modules
     cp /opt/xpmem/etc/56-xpmem.rules /etc/udev/rules.d
     depmod -a ${KVERSION}
