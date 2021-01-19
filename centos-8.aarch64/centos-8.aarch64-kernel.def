@@ -6,17 +6,18 @@
 
 %post
     # Add additional packages below that require specific kernel support
-    export KERNEL_VER=4.18.0-193.14.2
-    export KERNEL_OS=el8_2
+    export KERNEL_VER=4.18.0-240.1.1
+    export KERNEL_OS=el8_3
     export KERNEL_ARCH=aarch64
+    export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
     dnf -y install \
-           kernel-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
-           kernel-devel-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
-           kernel-headers-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
-           kernel-modules-extra-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
+           kernel-${KVERSION} \
+           kernel-devel-${KVERSION} \
+           kernel-headers-${KVERSION} \
+           kernel-modules-extra-${KVERSION} \
            kernel-rpm-macros \
-           kernel-tools-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} \
-           perf-${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
+           kernel-tools-${KVERSION} \
+           perf-${KVERSION}
     dnf versionlock add kernel-* perf-*
 
 %post

@@ -6,8 +6,8 @@
 
 %post
     # Variables
-    export PMIX_VER=3.1.5
-    export SLURM_VER=20.02.3
+    export PMIX_VER=3.1.6
+    export SLURM_VER=20.11.2
     export NHC_VER=1.4.2
     export KERNEL_OS=el8
     export KERNEL_ARCH=aarch64

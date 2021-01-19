@@ -6,10 +6,10 @@
 
 %post
     # Variables
-    export MOFED_VER=5.1-0.6.6.0
-    export OS=rhel8.1
-    export KERNEL_VER=4.18.0-193.14.2
-    export KERNEL_OS=el8_2
+    export MOFED_VER=5.2-1.0.4.0
+    export OS=rhel8.3
+    export KERNEL_VER=4.18.0-240.1.1
+    export KERNEL_OS=el8_3
     export KERNEL_ARCH=aarch64
     export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
 
@@ -77,11 +77,14 @@ EOF
     rm -rf /tmp/xpmem
     git clone https://github.com/hjelmn/xpmem.git
     cd xpmem
+    # Patch
+    sed -i '252s/5, 3, 0/4, 18, 0/g' kernel/xpmem_pfn.c
     ./autogen.sh
     ./configure --prefix=/opt/xpmem --with-kernelvers=${KVERSION} --with-kerneldir=/usr/src/kernels/${KVERSION}
     make install
-    mv /opt/xpmem/lib/modules/${KVERSION}/xpmem.ko /usr/lib/modules/${KVERSION}/extra
-    rmdir /opt/xpmem/lib/modules/${KVERSION}
+    mkdir -p /usr/lib/modules/${KVERSION}/extra/xpmem
+    mv /opt/xpmem/lib/modules/${KVERSION}/kernel/xpmem/xpmem.ko /usr/lib/modules/${KVERSION}/extra/xpmem/
+    rm -rf /opt/xpmem/lib/modules
     cp /opt/xpmem/etc/56-xpmem.rules /etc/udev/rules.d
     depmod -a ${KVERSION}
     cd /tmp
