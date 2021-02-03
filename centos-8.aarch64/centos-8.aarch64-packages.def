@@ -72,6 +72,7 @@
            libmpc-devel \
            libnl3 \
            libnl3-devel \
+           libnsl \
            libpciaccess-devel \
            libpng-devel \
            libselinux-devel \
@@ -109,6 +110,7 @@
            numactl-devel \
            openssl \
            openssl-devel \
+           pandoc \
            pango-devel \
            patchutils \
            perl-Archive-Tar \
