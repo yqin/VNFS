@@ -1,0 +1,49 @@
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%post
+    # Variables
+    export LUSTRE_VER=2.14.0
+    export OS=el8.3
+    export KERNEL_VER=4.18.0-240.22.1
+    export KERNEL_OS=el8
+    export KERNEL_ARCH=aarch64
+
+    # Dependencies
+    dnf -y install \
+           kernel-abi-whitelists
+
+    # Lustre Client
+    cd /tmp
+    wget -c https://downloads.whamcloud.com/public/lustre/lustre-${LUSTRE_VER}/${KERNEL_OS}/client/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
+    rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
+    tar zxvpf lustre-${LUSTRE_VER}.tar.gz
+    cd lustre-${LUSTRE_VER}
+
+    # Patch for LU-14488
+    wget "https://review.whamcloud.com/changes/41887/revisions/60d55e42ed9e043341790bf7624627c93cc99200/patch?download" -O lustre.patch.base64
+    base64 -d lustre.patch.base64 > lustre.patch
+    patch -p1 < lustre.patch || true
+    sh autogen.sh
+
+    ./configure --disable-server --enable-client --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --with-o2ib=/usr/src/ofa_kernel/default
+    make -j16 rpms
+
+    # Fix symbol dependency
+    rpm -ihv --nodeps kmod-lustre-client-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    dnf -y install \
+           lustre-client-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           lustre-iokit-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    cd ../
+    rm -rf lustre-${LUSTRE_VER} lustre-${LUSTRE_VER}-1.src.rpm lustre-${LUSTRE_VER}.tar.gz kmp-lustre-* lustre.spec
+
+%post
+    # Yum
+    dnf clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-

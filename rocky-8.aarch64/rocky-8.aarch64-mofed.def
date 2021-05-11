@@ -1,0 +1,102 @@
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%post
+    # Variables
+    export MOFED_VER=5.3-1.0.0.1
+    export OS=rhel8.3
+    export KERNEL_VER=4.18.0-240.22.1
+    export KERNEL_OS=el8
+    export KERNEL_ARCH=aarch64
+    export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
+
+    # Mellanox OFED for the specific kernel
+    cd /tmp
+    cat > ofed.conf << EOF
+ofed-scripts=y
+mlnx-ofa_kernel=y
+mlnx-ofa_kernel-devel=y
+kernel-mft-mlnx=y
+knem=y
+iser=n
+srp=n
+isert=n
+mlnx-rdma-rxe=n
+rshim=y
+rdma-core=y
+libibverbs=y
+librdmacm=y
+rdma-core-devel=y
+libibverbs-utils=y
+libibumad=y
+ibacm=y
+librdmacm-utils=y
+opensm-libs=y
+opensm=y
+opensm-devel=y
+opensm-static=y
+dapl=y
+dapl-devel=y
+dapl-devel-static=y
+dapl-utils=y
+perftest=y
+mstflint=y
+mft=y
+srp_daemon=n
+infiniband-diags=y
+ibutils2=y
+cc_mgr=y
+dump_pr=y
+ar_mgr=y
+ibdump=y
+ucx=n
+ucx-devel=n
+sharp=n
+ucx-cma=n
+ucx-ib=n
+ucx-rdmacm=n
+mpi-selector=n
+hcoll=n
+openmpi=n
+mlnx-ethtool=y
+mlnx-iproute2=y
+mlnxofed-docs=y
+mpitests_openmpi=n
+EOF
+
+    wget -c http://www.mellanox.com/downloads/ofed/MLNX_OFED-${MOFED_VER}/MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
+    tar zxvpf MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}.tgz
+    cd MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}
+    ./mlnxofedinstall --distro ${OS} --kernel ${KVERSION} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
+
+    # xpmem
+    cd /tmp
+    rm -rf /tmp/xpmem
+    git clone https://github.com/hjelmn/xpmem.git
+    cd xpmem
+    # Patch
+    sed -i '252s/5, 3, 0/4, 18, 0/g' kernel/xpmem_pfn.c
+    ./autogen.sh
+    ./configure --prefix=/opt/xpmem --with-kernelvers=${KVERSION} --with-kerneldir=/usr/src/kernels/${KVERSION}
+    make install
+    mkdir -p /usr/lib/modules/${KVERSION}/extra/xpmem
+    mv /opt/xpmem/lib/modules/${KVERSION}/kernel/xpmem/xpmem.ko /usr/lib/modules/${KVERSION}/extra/xpmem/
+    rm -rf /opt/xpmem/lib/modules
+    cp /opt/xpmem/etc/56-xpmem.rules /etc/udev/rules.d
+    depmod -a ${KVERSION}
+    cd /tmp
+    rm -rf /tmp/xpmem
+    # Put it here because existing knem does it this way, otherwise we should use /etc/modules-load.d, or udev
+    echo "/sbin/modprobe xpmem > /dev/null 2>&1" > /etc/sysconfig/modules/xpmem.modules
+    chmod 755 /etc/sysconfig/modules/xpmem.modules
+
+%post
+    # Yum
+    dnf clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
