@@ -1,0 +1,67 @@
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%post
+    # Variables
+    export PMIX_VER=3.2.3
+    export SLURM_VER=20.11.6
+    export NHC_VER=1.4.2
+    export KERNEL_OS=el8
+    export KERNEL_ARCH=x86_64
+
+    # Dependencies
+    dnf -y install \
+           munge \
+           munge-devel \
+           pam-devel
+
+    # PMIx
+    cd /tmp
+    wget -c https://github.com/openpmix/openpmix/releases/download/v${PMIX_VER}/pmix-${PMIX_VER}.tar.bz2
+    rpmbuild -tb --define "_topdir /tmp/rpmbuild" --clean pmix-${PMIX_VER}.tar.bz2
+    dnf -y install \
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/pmix-${PMIX_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    rm -rf /tmp/rpmbuild pmix-${PMIX_VER}.tar.bz2
+
+    # Slurm
+    cd /tmp
+    wget -c https://download.schedmd.com/slurm/slurm-${SLURM_VER}.tar.bz2
+    rpmbuild -tb --define "_topdir /tmp/rpmbuild" slurm-${SLURM_VER}.tar.bz2
+    dnf -y install \
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-pam_slurm-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-slurmd-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    rm -rf /tmp/rpmbuild slurm-${SLURM_VER}.tar.bz2
+    systemctl enable munge
+    systemctl enable slurmd
+    mkdir -p /etc/slurm /var/spool/slurmd /var/log/munge /var/log/slurm
+    chown slurm:slurm /etc/slurm
+    chmod 755 /etc/slurm
+    chown root:root /var/spool/slurmd
+    chmod 755 /var/spool/slurmd
+    chown munge:munge /var/log/munge
+    chmod 700 /var/log/munge
+    chown slurm:slurm /var/log/slurm
+    chmod 755 /var/log/slurm
+
+    # NHC
+    cd /tmp
+    wget -c https://github.com/mej/nhc/archive/${NHC_VER}.tar.gz -O nhc-${NHC_VER}.tar.gz
+    tar zxpvf nhc-${NHC_VER}.tar.gz
+    cd nhc-${NHC_VER}
+    ./autogen.sh
+    ./configure --prefix=/
+    make install
+    cd /tmp
+    rm -rf nhc-${NHC_VER}.tar.gz nhc-${NHC_VER}
+
+%post
+    # Yum
+    dnf clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
