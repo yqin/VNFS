@@ -128,6 +128,7 @@
            perl-Time-Piece \
            perl-XML-LibXML \
            perl-XML-Parser \
+           perl-utils \
            pixman-devel \
            platform-python \
            platform-python-devel \
