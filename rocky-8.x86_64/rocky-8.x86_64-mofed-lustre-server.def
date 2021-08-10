@@ -6,51 +6,55 @@
 
 %post
     # Variables
-    export ZFS_VER=0.8.6
     export LUSTRE_VER=2.14.0
-    export KERNEL_VER=4.18.0-240.22.1
-    export KERNEL_OS=el8
+    export OS=el8.3
+    export KERNEL_VER=4.18.0-305.10.2
+    export KERNEL_OS=el8_4
     export KERNEL_ARCH=x86_64
 
-    # ZFS
-    cd /tmp
-    wget -c https://github.com/zfsonlinux/zfs/releases/download/zfs-${ZFS_VER}/zfs-${ZFS_VER}.tar.gz
-    tar zxpvf zfs-${ZFS_VER}.tar.gz
-    cd zfs-${ZFS_VER}
-    ./configure --with-spec=redhat --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
-    make pkg-utils pkg-kmod
+    # Dependencies
     dnf -y install \
-           kmod-spl-${SPL_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           kmod-spl-devel-${SPL_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           kmod-zfs-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           kmod-zfs-devel-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           libnvpair1-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           libuutil1-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           libzfs2-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           libzfs2-devel-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           libzpool2-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           spl-${SPL_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           zfs-${ZFS_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
-    cd ../
-    rm -rf zfs-${ZFS_VER} zfs-${ZFS_VER}.tar.gz
-    systemctl disable zfs-import-cache.service
-    systemctl enable zfs-import-scan.service
+           kernel-abi-whitelists
+
+    # ZFS
+    source /etc/os-release
+    dnf -y install \
+           https://zfsonlinux.org/epel/zfs-release.el${VERSION_ID/./_}.noarch.rpm
+    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux
+    dnf config-manager --disable zfs
+    dnf config-manager --enable zfs-kmod
+    dnf -y install \
+           kmod-zfs \
+           kmod-zfs-devel \
+           libzfs4 \
+           libzfs4-devel \
+           libzpool4 \
+           zfs
+    echo zfs >/etc/modules-load.d/zfs.conf
 
     # Lustre Server
     cd /tmp
-    wget -c https://downloads.whamcloud.com/public/lustre/lustre-${LUSTRE_VER}/${KERNEL_OS}/server/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
+    wget -c https://downloads.whamcloud.com/public/lustre/lustre-${LUSTRE_VER}/${OS}/server/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
     rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
     tar zxvpf lustre-${LUSTRE_VER}.tar.gz
     cd lustre-${LUSTRE_VER}
+
+    # Patch for LU-14488
+    wget "https://review.whamcloud.com/changes/41887/revisions/60d55e42ed9e043341790bf7624627c93cc99200/patch?download" -O lustre.patch.base64
+    base64 -d lustre.patch.base64 > lustre.patch
+    patch -p1 < lustre.patch || true
+    sh autogen.sh
+
     ./configure --enable-server --disable-ldiskfs --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --with-o2ib=/usr/src/ofa_kernel/default
     make -j16 rpms
+
+    # Fix symbol dependency
+    rpm -ihv --nodeps kmod-lustre-${LUSTRE_VER}-1.el8.${KERNEL_ARCH}.rpm
     dnf -y install \
-           kmod-lustre-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           kmod-lustre-osd-zfs-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           lustre-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           lustre-iokit-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           lustre-osd-zfs-mount-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           lustre-resource-agents-${LUSTRE_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+           kmod-lustre-osd-zfs-${LUSTRE_VER}-1.el8.${KERNEL_ARCH}.rpm \
+           lustre-${LUSTRE_VER}-1.el8.${KERNEL_ARCH}.rpm \
+           lustre-iokit-${LUSTRE_VER}-1.el8.${KERNEL_ARCH}.rpm \
+           lustre-osd-zfs-mount-${LUSTRE_VER}-1.el8.${KERNEL_ARCH}.rpm
     cd ../
     rm -rf lustre-${LUSTRE_VER} lustre-${LUSTRE_VER}-1.src.rpm lustre-${LUSTRE_VER}.tar.gz kmp-lustre-* lustre.spec
 
