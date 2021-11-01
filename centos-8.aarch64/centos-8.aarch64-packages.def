@@ -80,6 +80,7 @@
            libsysfs \
            libsysfs-devel \
            libtiff-devel \
+           libtirpc-devel \
            libtool \
            libtool-ltdl-devel \
            libunwind-devel \
