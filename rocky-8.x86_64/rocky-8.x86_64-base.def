@@ -66,6 +66,7 @@ Include: dnf dnf-utils
     chmod 4755 /usr/bin/ping
 
     # Root ssh
+    chmod 750 /root
     mkdir -p /root/.ssh
     chown root:root /root/.ssh
     chmod 700 /root/.ssh
