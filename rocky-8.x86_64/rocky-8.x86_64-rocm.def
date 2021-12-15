@@ -13,10 +13,7 @@ baseurl=http://repo.radeon.com/rocm/centos8/rpm
 enabled=1
 gpgcheck=0
 EOF
-    dnf -y install \
-           rock-dkms \
-           rock-dkms-firmware \
-           rocm-smi
+    dnf -y --nobest install rocm-dkms
     rm -rf /var/lib/dkms/amdgpu
 
 %post

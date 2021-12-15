@@ -6,8 +6,8 @@
 
 %post
     # Add additional packages below that require specific kernel support
-    export KERNEL_VER=4.18.0-305.10.2
-    export KERNEL_OS=el8_4
+    export KERNEL_VER=4.18.0-348.2.1
+    export KERNEL_OS=el8_5
     export KERNEL_ARCH=x86_64
     export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
     dnf -y install \
