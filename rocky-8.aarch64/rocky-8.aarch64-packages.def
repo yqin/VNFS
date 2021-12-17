@@ -49,6 +49,7 @@
            glib2 \
            glib2-devel \
            glibc-devel \
+           glibc-static \
            gperf \
            gperftools-devel \
            graphviz-devel \

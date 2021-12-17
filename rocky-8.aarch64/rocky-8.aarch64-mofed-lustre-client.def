@@ -6,10 +6,10 @@
 
 %post
     # Variables
-    export LUSTRE_VER=2.14.0
-    export OS=el8.3
-    export KERNEL_VER=4.18.0-305.10.2
-    export KERNEL_OS=el8_4
+    export LUSTRE_VER=2.12.7
+    export OS=el8
+    export KERNEL_VER=4.18.0-348.2.1
+    export KERNEL_OS=el8_5
     export KERNEL_ARCH=aarch64
 
     # Dependencies
@@ -22,13 +22,11 @@
     rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
     tar zxvpf lustre-${LUSTRE_VER}.tar.gz
     cd lustre-${LUSTRE_VER}
-
-    # Patch for LU-14488
-    wget "https://review.whamcloud.com/changes/41887/revisions/60d55e42ed9e043341790bf7624627c93cc99200/patch?download" -O lustre.patch.base64
+    # Patch for LU-15184
+    wget -c https://review.whamcloud.com/changes/45501/revisions/42661f7ba106b7d2e02f85a65880061585ca6ccb/patch?download -O lustre.patch.base64
     base64 -d lustre.patch.base64 > lustre.patch
     patch -p1 < lustre.patch || true
     sh autogen.sh
-
     ./configure --disable-server --enable-client --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --with-o2ib=/usr/src/ofa_kernel/default
     make -j16 rpms
 
