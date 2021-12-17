@@ -22,6 +22,10 @@
     rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
     tar zxvpf lustre-${LUSTRE_VER}.tar.gz
     cd lustre-${LUSTRE_VER}
+    # Patch for LU-15184
+    wget -c https://review.whamcloud.com/changes/45501/revisions/42661f7ba106b7d2e02f85a65880061585ca6ccb/patch?download -O lustre.patch.base64
+    base64 -d lustre.patch.base64 > lustre.patch
+    patch -p1 < lustre.patch || true
     sh autogen.sh
     ./configure --disable-server --enable-client --with-linux=/usr/src/kernels/${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} --with-o2ib=/usr/src/ofa_kernel/default
     make -j16 rpms
