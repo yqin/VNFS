@@ -115,6 +115,7 @@
            pandoc \
            pango-devel \
            patchutils \
+           pciutils-devel \
            perl-Archive-Tar \
            perl-CGI \
            perl-Date-Manip \

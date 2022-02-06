@@ -6,7 +6,7 @@
 
 %post
     # Variables
-    export KERNEL_VER=4.18.0-348.2.1
+    export KERNEL_VER=4.18.0-348.12.2
     export KERNEL_OS=el8_5
     export ARCH=x86_64
 
@@ -14,11 +14,8 @@
     wget -O /etc/yum.repos.d/cuda-rhel8.repo https://developer.download.nvidia.com/compute/cuda/repos/rhel8/${ARCH}/cuda-rhel8.repo
     dnf -y --nobest update
     dnf -y install \
-           cuda-drivers
-
-    # Build CUDA Driver
-    dkms autoinstall -k ${KERNEL_VER}.${KERNEL_OS}.${ARCH}
-    rm -rf /var/lib/dkms/nvidia
+           cuda-drivers \
+           nvidia-kmod-headers
 
 %post
     # Yum
