@@ -8,9 +8,10 @@
     # Variables
     export GPUDIRECT_VER=1.1
     export GDRCOPY_VER=2.3
-    export KERNEL_VER=4.18.0-348.12.2
-    export KERNEL_OS=el8_5
+    export KERNEL_VER=4.18.0-372.9.1
+    export KERNEL_OS=el8
     export KERNEL_ARCH=aarch64
+    export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
 
     # GPUDirect RDMA
     cd /tmp
@@ -18,7 +19,7 @@
     wget -c https://www.mellanox.com/downloads/ofed/nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz
     tar zxpvf nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz
     cd nvidia-peer-memory-${GPUDIRECT_VER}
-    make KVER=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} all install
+    make KVER=${KVERSION} all install
     cd /tmp
     rm -rf nvidia-peer-memory_${GPUDIRECT_VER}.tar.gz nvidia-peer-memory-${GPUDIRECT_VER}
 
@@ -28,7 +29,7 @@
     wget -c https://github.com/NVIDIA/gdrcopy/archive/v${GDRCOPY_VER}.tar.gz
     tar zxpvf v${GDRCOPY_VER}.tar.gz
     cd gdrcopy-${GDRCOPY_VER}
-    make KVER=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH} prefix=/usr driver lib drv_install lib_install
+    make KVER=${KVERSION} prefix=/usr driver lib drv_install lib_install
     cd /tmp
     rm -rf gdrcopy-${GDRCOPY_VER} v${GDRCOPY_VER}.tar.gz
 

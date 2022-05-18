@@ -7,7 +7,7 @@
 %post
     # Variables
     export PMIX_VER=3.2.3
-    export SLURM_VER=21.08.4
+    export SLURM_VER=21.08.8-2
     export NHC_VER=1.4.2
     export KERNEL_OS=el8
     export KERNEL_ARCH=aarch64
@@ -31,9 +31,9 @@
     wget -c https://download.schedmd.com/slurm/slurm-${SLURM_VER}.tar.bz2
     rpmbuild -tb --define "_topdir /tmp/rpmbuild" slurm-${SLURM_VER}.tar.bz2
     dnf -y install \
-           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-pam_slurm-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
-           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-slurmd-${SLURM_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-${SLURM_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-pam_slurm-${SLURM_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm \
+           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/slurm-slurmd-${SLURM_VER}.${KERNEL_OS}.${KERNEL_ARCH}.rpm
     rm -rf /tmp/rpmbuild slurm-${SLURM_VER}.tar.bz2
     systemctl enable munge
     systemctl enable slurmd
