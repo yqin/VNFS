@@ -62,6 +62,7 @@
            libaio \
            libaio-devel \
            libattr-devel \
+           libbsd-devel \
            libcurl-devel \
            libevent-devel \
            libffi-devel \
