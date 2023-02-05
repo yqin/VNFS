@@ -8,7 +8,7 @@
     dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     dnf -y --nobest install \
            docker-ce \
-           singularity
+           apptainer
 
 %post
     # Yum

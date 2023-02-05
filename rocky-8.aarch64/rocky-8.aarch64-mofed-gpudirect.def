@@ -8,8 +8,8 @@
     # Variables
     export GPUDIRECT_VER=1.1
     export GDRCOPY_VER=2.3
-    export KERNEL_VER=4.18.0-372.26.1
-    export KERNEL_OS=el8_6
+    export KERNEL_VER=4.18.0-425.10.1
+    export KERNEL_OS=el8_7
     export KERNEL_ARCH=aarch64
     export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
 
