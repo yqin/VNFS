@@ -1,0 +1,38 @@
+%files
+    /etc/passwd /etc
+    /etc/shadow /etc
+    /etc/group /etc
+    /etc/gshadow /etc
+
+%post
+    # Add additional packages below that require specific kernel support
+    export KERNEL_VER=5.14.0-284.11.1
+    export KERNEL_OS=el9_2
+    export KERNEL_ARCH=x86_64
+    export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
+    dnf -y install \
+           kernel-${KVERSION} \
+           kernel-devel-${KVERSION} \
+           kernel-headers-${KVERSION} \
+           kernel-modules-extra-${KVERSION} \
+           kernel-rpm-macros \
+           kernel-tools-${KVERSION} \
+           perf-${KVERSION}
+    dnf versionlock add kernel-* perf-*
+
+%post
+    # Enable cpupower service
+    systemctl enable cpupower.service
+
+    # Fix turbostat
+    chmod 4755 /usr/bin/turbostat
+
+    # Fix kernel location
+    mv /lib/modules/${KVERSION}/vmlinuz /boot/vmlinuz-${KVERSION}
+
+    # Yum
+    dnf clean all
+    rm -rf /var/lib/yum/yumdb/*
+
+    # Misc
+    rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
