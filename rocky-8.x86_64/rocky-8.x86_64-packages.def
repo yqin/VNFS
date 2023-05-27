@@ -61,6 +61,7 @@
            lftp \
            libaio \
            libaio-devel \
+           libasan \
            libattr-devel \
            libbsd-devel \
            libcurl-devel \
@@ -91,12 +92,13 @@
            libXaw-devel \
            libXext-devel \
            libXinerama-devel \
-           libxml2-devel \
            libXmu-devel \
            libXrender-devel \
            libXt-devel \
            libXtst \
            libXtst-devel \
+           libxkbcommon-x11 \
+           libxml2-devel \
            libyaml-devel \
            lshw \
            lsof \
@@ -110,6 +112,7 @@
            motif-devel \
            mpfr-devel \
            ncurses-devel \
+           nss \
            numactl-devel \
            openssl \
            openssl-devel \
@@ -159,6 +162,7 @@
            xcb-util-devel \
            xcb-util-image-devel \
            xcb-util-keysyms-devel \
+           xcb-util-renderutil \
            xcb-util-wm-devel \
            xmlto \
            xorg-x11-xbitmaps \
