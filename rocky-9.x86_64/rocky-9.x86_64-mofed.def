@@ -80,49 +80,6 @@ EOF
     ./mlnxofedinstall --distro ${OS} --kernel ${KVERSION} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
     systemctl disable rshim.service
 
-    # xpmem
-    cd /tmp
-    rm -rf /tmp/xpmem
-    git clone https://github.com/hjelmn/xpmem.git
-    cd xpmem
-
-    # patch xpmem
-    cat > xpmem.patch << EOF
-diff --git a/kernel/xpmem_pfn.c b/kernel/xpmem_pfn.c
-index d939ff3..0a4785a 100644
---- a/kernel/xpmem_pfn.c
-+++ b/kernel/xpmem_pfn.c
-@@ -29,11 +29,13 @@
- #define num_of_pages(v, s) \
- 		(((offset_in_page(v) + (s)) + (PAGE_SIZE - 1)) >> PAGE_SHIFT)
- 
-+#if 0
- #if LINUX_VERSION_CODE < KERNEL_VERSION(5,17,0)
- #define pde_data(indoe) PDE_DATA(inode)
- #elif LINUX_VERSION_CODE < KERNEL_VERSION(3,10,0)
- #define pde_data(inode) ((PDE(inode)->data))
- #endif
-+#endif
- 
- #if CONFIG_HUGETLB_PAGE
- 
-EOF
-    patch -p1 --fuzz 3 < xpmem.patch
-
-    ./autogen.sh
-    ./configure --prefix=/opt/xpmem --with-kernelvers=${KVERSION} --with-kerneldir=/usr/src/kernels/${KVERSION}
-    make install
-    mkdir -p /usr/lib/modules/${KVERSION}/extra/xpmem
-    mv /opt/xpmem/lib/modules/${KVERSION}/kernel/xpmem/xpmem.ko /usr/lib/modules/${KVERSION}/extra/xpmem/
-    rm -rf /opt/xpmem/lib/modules
-    cp /opt/xpmem/etc/56-xpmem.rules /etc/udev/rules.d
-    depmod -a ${KVERSION}
-    cd /tmp
-    rm -rf /tmp/xpmem
-    # Put it here because existing knem does it this way, otherwise we should use /etc/modules-load.d, or udev
-    echo "/sbin/modprobe xpmem > /dev/null 2>&1" > /etc/sysconfig/modules/xpmem.modules
-    chmod 755 /etc/sysconfig/modules/xpmem.modules
-
 %post
     # Yum
     dnf clean all
