@@ -15,7 +15,8 @@
     wget -O /etc/yum.repos.d/cuda-rhel9.repo https://developer.download.nvidia.com/compute/cuda/repos/rhel9/sbsa/cuda-rhel9.repo
     dnf -y --nobest update
     dnf -y install \
-           cuda-drivers
+           cuda-drivers \
+           dkms
 
     # Build CUDA Driver
     ln -s /usr/src/kernels/${KVERSION}/arch/arm64 /usr/src/kernels/${KVERSION}/arch/aarch64

@@ -6,7 +6,7 @@
 
 %post
     # Variables
-    export PMIX_VER=3.2.4
+    #export PMIX_VER=3.2.4
     export SLURM_VER=23.02.2
     export NHC_VER=1.4.2
     export KERNEL_OS=el9
@@ -19,12 +19,12 @@
            pam-devel
 
     # PMIx
-    cd /tmp
-    wget -c https://github.com/openpmix/openpmix/releases/download/v${PMIX_VER}/pmix-${PMIX_VER}.tar.bz2
-    rpmbuild -tb --define "_topdir /tmp/rpmbuild" --clean pmix-${PMIX_VER}.tar.bz2
-    dnf -y install \
-           /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/pmix-${PMIX_VER}-1.${KERNEL_OS}.${KERNEL_ARCH}.rpm
-    rm -rf /tmp/rpmbuild pmix-${PMIX_VER}.tar.bz2
+    #cd /tmp
+    #wget -c https://github.com/openpmix/openpmix/releases/download/v${PMIX_VER}/pmix-${PMIX_VER}-2.tar.bz2
+    #rpmbuild -tb --define "_topdir /tmp/rpmbuild" --clean pmix-${PMIX_VER}-2.tar.bz2
+    #dnf -y install \
+    #       /tmp/rpmbuild/RPMS/${KERNEL_ARCH}/pmix-${PMIX_VER}-2.${KERNEL_OS}.${KERNEL_ARCH}.rpm
+    #rm -rf /tmp/rpmbuild pmix-${PMIX_VER}-2.tar.bz2
 
     # Slurm
     cd /tmp

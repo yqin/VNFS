@@ -16,6 +16,7 @@
     dnf -y --nobest update
     dnf -y install \
            cuda-drivers \
+           dkms \
            nvidia-kmod-headers
 
     # Build CUDA Driver
