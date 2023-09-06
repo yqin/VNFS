@@ -57,6 +57,7 @@
            hwloc-devel \
            imake \
            ipmitool \
+           json-c-devel \
            keyutils-libs-devel \
            ksh \
            lftp \
@@ -74,9 +75,11 @@
            libjpeg-turbo-devel \
            libmount-devel \
            libmpc-devel \
+           libnghttp2-devel \
            libnl3 \
            libnl3-devel \
            libnsl \
+           libpcap-devel \
            libpciaccess-devel \
            libpng-devel \
            libselinux-devel \
@@ -101,6 +104,7 @@
            libxkbcommon-x11 \
            libxml2-devel \
            libyaml-devel \
+           libzip-devel \
            lshw \
            lsof \
            lvm2 \
@@ -156,6 +160,7 @@
            time \
            tk-devel \
            tmux \
+           uriparser-devel \
            uuid-devel \
            vim-enhanced \
            xcb-util-devel \

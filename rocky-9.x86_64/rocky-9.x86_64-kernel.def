@@ -17,6 +17,7 @@
            kernel-modules-extra-${KVERSION} \
            kernel-rpm-macros \
            kernel-tools-${KVERSION} \
+           microcode_ctl \
            perf-${KVERSION}
     dnf versionlock add kernel-* perf-*
 
