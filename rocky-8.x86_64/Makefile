@@ -4,7 +4,7 @@ GITVERS     := $(shell git describe --always)
 TAG         ?= $(firstword $(MAKECMDGOALS))
 VNFSNAME    := rocky-8.x86_64
 CHROOTDIR   := $(BUILDDIR)/$(VNFSNAME)-$(TAG)-$(GITVERS)
-KERNEL_VER  := 4.18.0-425.10.1.el8_7.x86_64
+KERNEL_VER  := 4.18.0-477.21.1.el8_8.x86_64
 
 
 all:
@@ -15,7 +15,7 @@ mofed: base overlay-packages overlay-kernel overlay-containers overlay-slurm ove
 mofed-accel: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-cuda overlay-rocm overlay-mofed overlay-mofed-gpudirect cleanup
 mofed-accel-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-cuda overlay-mofed overlay-mofed-gpudirect overlay-mofed-lustre-client cleanup
 mofed-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-warewulf overlay-mofed overlay-mofed-lustre-client cleanup
-mofed-lustre-server: base overlay-packages overlay-kernel overlay-mofed overlay-mofed-lustre-server cleanup
+mofed-lustre-server: base overlay-kernel overlay-mofed overlay-mofed-lustre-server cleanup
 
 base:
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-base.def

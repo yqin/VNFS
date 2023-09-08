@@ -6,64 +6,81 @@
 
 %post
     # Variables
-    export MOFED_VER=5.9-0.5.6.0
-    export OS=rhel8.7
-    export KERNEL_VER=4.18.0-425.10.1
-    export KERNEL_OS=el8_7
+    export MOFED_VER=5.8-3.0.7.0
+    export OS=rhel8.8
+    export KERNEL_VER=4.18.0-477.21.1
+    export KERNEL_OS=el8_8
     export KERNEL_ARCH=x86_64
     export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
+
+    # Dependencies
+    dnf -y install \
+           autoconf \
+           automake \
+           gdb-headless \
+           libtool \
+           lsof \
+           patch \
+           python36 \
+           python36-devel \
+           rpm-build \
+           tcl \
+           tk
 
     # Mellanox OFED for the specific kernel
     cd /tmp
     cat > ofed.conf << EOF
-ofed-scripts=y
+prefix=/usr
 mlnx-ofa_kernel=y
 mlnx-ofa_kernel-devel=y
+mlnx-ofa_kernel-source=n
 kernel-mft-mlnx=y
 knem=y
+xpmem=y
+xpmem-modules=y
+libxpmem=y
 iser=n
 srp=n
 isert=n
-mlnx-rdma-rxe=n
-rshim=y
-rdma-core=y
 libibverbs=y
-librdmacm=y
 rdma-core-devel=y
 libibverbs-utils=y
 libibumad=y
+ibsim=y
 ibacm=y
+librdmacm=y
 librdmacm-utils=y
-opensm-libs=y
 opensm=y
+opensm-libs=y
 opensm-devel=y
 opensm-static=y
-dapl=y
-dapl-devel=y
-dapl-devel-static=y
-dapl-utils=y
 perftest=y
 mstflint=y
 mft=y
 srp_daemon=n
-infiniband-diags=y
 ibutils2=y
-cc_mgr=y
 dump_pr=y
-ar_mgr=y
 ibdump=y
+infiniband-diags=y
+dpcp=y
 ucx=n
 ucx-devel=n
 sharp=n
 ucx-cma=n
 ucx-ib=n
 ucx-rdmacm=n
+ucx-knem=n
+ucx-xpmem=n
 mpi-selector=n
-hcoll=n
 openmpi=n
+hcoll=n
 mlnx-ethtool=y
 mlnx-iproute2=y
+rshim=y
+ibarr=y
 mlnxofed-docs=y
+ofed-scripts=y
+mlnx-tools=y
 mpitests_openmpi=n
 EOF
 
@@ -72,25 +89,6 @@ EOF
     cd MLNX_OFED_LINUX-${MOFED_VER}-${OS}-${KERNEL_ARCH}
     ./mlnxofedinstall --distro ${OS} --kernel ${KVERSION} --add-kernel-support --without-fw-update --config /tmp/ofed.conf --force
     systemctl disable rshim.service
-
-    # xpmem
-    cd /tmp
-    rm -rf /tmp/xpmem
-    git clone https://github.com/hjelmn/xpmem.git
-    cd xpmem
-    ./autogen.sh
-    ./configure --prefix=/opt/xpmem --with-kernelvers=${KVERSION} --with-kerneldir=/usr/src/kernels/${KVERSION}
-    make install
-    mkdir -p /usr/lib/modules/${KVERSION}/extra/xpmem
-    mv /opt/xpmem/lib/modules/${KVERSION}/kernel/xpmem/xpmem.ko /usr/lib/modules/${KVERSION}/extra/xpmem/
-    rm -rf /opt/xpmem/lib/modules
-    cp /opt/xpmem/etc/56-xpmem.rules /etc/udev/rules.d
-    depmod -a ${KVERSION}
-    cd /tmp
-    rm -rf /tmp/xpmem
-    # Put it here because existing knem does it this way, otherwise we should use /etc/modules-load.d, or udev
-    echo "/sbin/modprobe xpmem > /dev/null 2>&1" > /etc/sysconfig/modules/xpmem.modules
-    chmod 755 /etc/sysconfig/modules/xpmem.modules
 
 %post
     # Yum

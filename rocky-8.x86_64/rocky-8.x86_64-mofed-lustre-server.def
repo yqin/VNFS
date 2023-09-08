@@ -6,30 +6,32 @@
 
 %post
     # Variables
-    export LUSTRE_VER=2.14.0
-    export OS=el8.3
-    export KERNEL_VER=4.18.0-425.10.1
-    export KERNEL_OS=el8_7
+    export LUSTRE_VER=2.15.3
+    export OS=el8.8
+    export KERNEL_VER=4.18.0-477.21.1
+    export KERNEL_OS=el8_8
     export KERNEL_ARCH=x86_64
     export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
 
     # Dependencies
     dnf -y install \
-           kernel-abi-whitelists
+           kernel-abi-whitelists \
+           libmount-devel \
+           libnl3-devel \
+           libyaml-devel
 
     # ZFS
     source /etc/os-release
     dnf -y install \
-           https://zfsonlinux.org/epel/zfs-release.el${VERSION_ID/./_}.noarch.rpm
-    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux
+           https://zfsonlinux.org/epel/zfs-release-2-3.el8.noarch.rpm
     dnf config-manager --disable zfs
     dnf config-manager --enable zfs-kmod
     dnf -y install \
            kmod-zfs \
            kmod-zfs-devel \
-           libzfs4 \
-           libzfs4-devel \
-           libzpool4 \
+           libzfs5 \
+           libzfs5-devel \
+           libzpool5 \
            zfs
     echo zfs >/etc/modules-load.d/zfs.conf
 
@@ -39,12 +41,6 @@
     rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
     tar zxvpf lustre-${LUSTRE_VER}.tar.gz
     cd lustre-${LUSTRE_VER}
-
-    # Patch for LU-14488
-    wget "https://review.whamcloud.com/changes/41887/revisions/60d55e42ed9e043341790bf7624627c93cc99200/patch?download" -O lustre.patch.base64
-    base64 -d lustre.patch.base64 > lustre.patch
-    patch -p1 < lustre.patch || true
-    sh autogen.sh
 
     ./configure --enable-server --disable-ldiskfs --with-linux=/usr/src/kernels/${KVERSION} --with-o2ib=/usr/src/ofa_kernel/default
     make -j16 rpms

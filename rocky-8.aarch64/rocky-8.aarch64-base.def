@@ -26,6 +26,7 @@ Include: dnf dnf-utils
            ethtool \
            glibc-langpack-en \
            gzip \
+           hostname \
            hwloc \
            initscripts \
            iproute \
