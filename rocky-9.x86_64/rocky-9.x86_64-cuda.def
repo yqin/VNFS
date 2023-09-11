@@ -3,25 +3,44 @@
     /etc/shadow /etc
     /etc/group /etc
     /etc/gshadow /etc
+    /global/software/rocky-9.x86_64/modules/langs/cuda/11.8/targets/x86_64-linux /tmp/cuda
 
 %post
     # Variables
-    export KERNEL_VER=5.14.0-284.11.1
+    export GDRCOPY_VER=2.3.1-1
+    export KERNEL_VER=5.14.0-284.25.1
     export KERNEL_OS=el9_2
-    export ARCH=x86_64
-    export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${ARCH}
+    export KERNEL_ARCH=x86_64
+    export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
 
     # CUDA
-    wget -O /etc/yum.repos.d/cuda-rhel9.repo https://developer.download.nvidia.com/compute/cuda/repos/rhel9/${ARCH}/cuda-rhel9.repo
-    dnf -y --nobest update
+    wget -O /etc/yum.repos.d/cuda-rhel9.repo https://developer.download.nvidia.com/compute/cuda/repos/rhel9/${KERNEL_ARCH}/cuda-rhel9.repo
     dnf -y install \
            cuda-drivers \
            dkms \
-           nvidia-kmod-headers
+           kmod-nvidia-latest-dkms
 
     # Build CUDA Driver
     dkms autoinstall -k ${KVERSION}
-    rm -rf /var/lib/dkms/nvidia
+
+    # GDRCopy
+    # Dependencies
+    dnf -y install \
+           check-devel \
+           gcc-c++ \
+           rpm-build
+    cd /tmp
+    rm -rf gdrcopy-${GDRCOPY_VER} v${GDRCOPY_VER}.tar.gz
+    wget -c https://github.com/NVIDIA/gdrcopy/archive/v${GDRCOPY_VER}.tar.gz
+    tar zxpvf v${GDRCOPY_VER}.tar.gz
+    cd gdrcopy-${GDRCOPY_VER}/packages
+    CUDA=/tmp/cuda ./build-rpm-packages.sh
+    dnf -y install \
+           gdrcopy-${GDRCOPY_VER}.${KERNEL_ARCH}.el9.rpm \
+           gdrcopy-kmod-${GDRCOPY_VER}dkms.noarch.el9.rpm
+    cd /tmp
+    rm -rf gdrcopy-${GDRCOPY_VER} v${GDRCOPY_VER}.tar.gz
+    rm -rf /tmp/cuda
 
 %post
     # Yum
