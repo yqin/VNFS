@@ -15,6 +15,7 @@
 
     # Dependencies
     dnf -y install \
+           device-mapper-multipath \
            kernel-abi-stablelists \
            keyutils-libs-devel \
            libmount-devel \
