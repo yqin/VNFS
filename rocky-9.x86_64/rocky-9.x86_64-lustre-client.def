@@ -8,8 +8,8 @@
     # Variables
     export LUSTRE_VER=2.15.3
     export OS=el9.2
-    export KERNEL_VER=5.14.0-284.25.1
-    export KERNEL_OS=el9_2
+    export KERNEL_VER=5.14.0-362.13.1
+    export KERNEL_OS=el9_3
     export KERNEL_ARCH=x86_64
     export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
 
@@ -19,13 +19,13 @@
 
     # Lustre Client
     cd /tmp
-    wget -c https://downloads.whamcloud.com/public/lustre/lustre-${LUSTRE_VER}/${OS}/client/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
-    rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
-    tar zxvpf lustre-${LUSTRE_VER}.tar.gz
-    cd lustre-${LUSTRE_VER}
-    #git clone https://github.com/lustre/lustre-release.git
-    #cd lustre-release
-    #sh autogen.sh
+    #wget -c https://downloads.whamcloud.com/public/lustre/lustre-${LUSTRE_VER}/${OS}/client/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
+    #rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
+    #tar zxvpf lustre-${LUSTRE_VER}.tar.gz
+    #cd lustre-${LUSTRE_VER}
+    git clone https://github.com/lustre/lustre-release.git
+    cd lustre-release
+    sh autogen.sh
     ./configure --disable-server --enable-client --with-linux=/usr/src/kernels/${KVERSION} --with-o2ib=/usr/src/ofa_kernel/default
     make -j16 rpms
 
@@ -33,7 +33,10 @@
     #rpm -ihv --nodeps kmod-lustre-client-*.el9.${KERNEL_ARCH}.rpm
     dnf -y install \
            kmod-lustre-client-2.*.el9.${KERNEL_ARCH}.rpm \
+           kmod-lustre-client-tests-2.*.el9.${KERNEL_ARCH}.rpm \
            lustre-client-2.*.el9.${KERNEL_ARCH}.rpm \
+           lustre-client-devel-2.*.el9.${KERNEL_ARCH}.rpm \
+           lustre-client-tests-2.*.el9.${KERNEL_ARCH}.rpm \
            lustre-iokit-2.*.el9.${KERNEL_ARCH}.rpm
     cd ../
     rm -rf lustre-release lustre-${LUSTRE_VER} lustre-${LUSTRE_VER}-1.src.rpm lustre-${LUSTRE_VER}.tar.gz kmp-lustre-* lustre.spec
@@ -45,3 +48,4 @@
 
     # Misc
     rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
+    chmod 750 /root

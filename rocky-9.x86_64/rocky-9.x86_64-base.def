@@ -83,3 +83,4 @@ Include: dnf dnf-utils
 
     # Misc
     rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
+    chmod 750 /root

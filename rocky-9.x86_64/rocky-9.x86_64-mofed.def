@@ -6,10 +6,10 @@
 
 %post
     # Variables
-    export MOFED_VER=23.07-0.5.1.2
-    export OS=rhel9.2
-    export KERNEL_VER=5.14.0-284.25.1
-    export KERNEL_OS=el9_2
+    export MOFED_VER=23.10-1.1.9.0
+    export OS=rhel9.3
+    export KERNEL_VER=5.14.0-362.13.1
+    export KERNEL_OS=el9_3
     export KERNEL_ARCH=x86_64
     export KVERSION=${KERNEL_VER}.${KERNEL_OS}.${KERNEL_ARCH}
 
@@ -100,3 +100,4 @@ EOF
 
     # Misc
     rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
+    chmod 750 /root

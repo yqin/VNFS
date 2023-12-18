@@ -4,7 +4,7 @@ GITVERS     := $(shell git describe --always)
 TAG         ?= $(firstword $(MAKECMDGOALS))
 VNFSNAME    := rocky-9.x86_64
 CHROOTDIR   := $(BUILDDIR)/$(VNFSNAME)-$(TAG)-$(GITVERS)
-KERNEL_VER  := 5.14.0-284.25.1.el9_2.x86_64
+KERNEL_VER  := 5.14.0-362.13.1.el9_3.x86_64
 
 
 all:
