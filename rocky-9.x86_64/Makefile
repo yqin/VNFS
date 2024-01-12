@@ -10,12 +10,12 @@ KERNEL_VER  := 5.14.0-362.13.1.el9_3.x86_64
 all:
 	@ echo "Select a make target: generic, mofed, mofed-accel, mofed-accel-lustre, mofed-lustre, mofed-lustre-server"
 
-generic: base overlay-packages overlay-slurm cleanup
-mofed: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-mofed cleanup
-mofed-accel: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-mofed overlay-cuda cleanup
-mofed-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-mofed overlay-lustre-client cleanup
-mofed-accel-lustre: base overlay-packages overlay-kernel overlay-containers overlay-slurm overlay-mofed overlay-cuda overlay-lustre-client cleanup
-mofed-lustre-server: base overlay-kernel overlay-mofed overlay-lustre-server cleanup
+generic: base overlay-packages overlay-containers overlay-slurm cleanup
+mofed: base overlay-packages overlay-containers overlay-slurm overlay-mofed cleanup
+mofed-accel: base overlay-packages overlay-containers overlay-slurm overlay-mofed overlay-cuda cleanup
+mofed-lustre: base overlay-packages overlay-containers overlay-slurm overlay-mofed overlay-lustre-client cleanup
+mofed-accel-lustre: base overlay-packages overlay-containers overlay-slurm overlay-mofed overlay-cuda overlay-lustre-client cleanup
+mofed-lustre-server: base overlay-mofed overlay-lustre-server cleanup
 
 base:
 	sudo singularity build -s $(CHROOTDIR) $(VNFSNAME)-base.def
