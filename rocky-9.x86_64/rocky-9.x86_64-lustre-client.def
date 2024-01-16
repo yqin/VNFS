@@ -6,8 +6,8 @@
 
 %post
     # Variables
-    export LUSTRE_VER=2.15.3
-    export OS=el9.2
+    export LUSTRE_VER=2.15.4
+    export OS=el9.3
     export KERNEL_VER=5.14.0-362.13.1
     export KERNEL_OS=el9_3
     export KERNEL_ARCH=x86_64
@@ -19,13 +19,13 @@
 
     # Lustre Client
     cd /tmp
-    #wget -c https://downloads.whamcloud.com/public/lustre/lustre-${LUSTRE_VER}/${OS}/client/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
-    #rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
-    #tar zxvpf lustre-${LUSTRE_VER}.tar.gz
-    #cd lustre-${LUSTRE_VER}
-    git clone https://github.com/lustre/lustre-release.git
-    cd lustre-release
-    sh autogen.sh
+    wget -c https://downloads.whamcloud.com/public/lustre/lustre-${LUSTRE_VER}/${OS}/client/SRPMS/lustre-${LUSTRE_VER}-1.src.rpm
+    rpm2cpio lustre-${LUSTRE_VER}-1.src.rpm | cpio -idmv
+    tar zxvpf lustre-${LUSTRE_VER}.tar.gz
+    cd lustre-${LUSTRE_VER}
+    #git clone https://github.com/lustre/lustre-release.git
+    #cd lustre-release
+    #sh autogen.sh
     ./configure --disable-server --enable-client --with-linux=/usr/src/kernels/${KVERSION} --with-o2ib=/usr/src/ofa_kernel/default
     make -j16 rpms
 
