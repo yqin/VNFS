@@ -7,13 +7,14 @@
 %post
     # Variables
     #export PMIX_VER=3.2.4
-    export SLURM_VER=23.02.2
+    export SLURM_VER=23.11.1
     export NHC_VER=1.4.2
     export KERNEL_OS=el9
     export KERNEL_ARCH=aarch64
 
     # Dependencies
     dnf -y install \
+           dbus-devel \
            munge \
            munge-devel \
            pam-devel
@@ -65,3 +66,4 @@
 
     # Misc
     rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
+    chmod 750 /root

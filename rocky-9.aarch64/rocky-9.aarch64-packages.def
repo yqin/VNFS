@@ -53,7 +53,6 @@
            gperf \
            gperftools-devel \
            graphviz-devel \
-           hostname \
            hwloc-devel \
            imake \
            ipmitool \
@@ -73,6 +72,7 @@
            libgomp \
            libgudev1-devel \
            libjpeg-turbo-devel \
+           liblsan \
            libmount-devel \
            libmpc-devel \
            libnghttp2-devel \
@@ -90,6 +90,8 @@
            libtirpc-devel \
            libtool \
            libtool-ltdl-devel \
+           libtsan \
+           libubsan \
            libunwind-devel \
            libuuid-devel \
            libX11-devel \
@@ -171,7 +173,8 @@
            xmlto \
            xorg-x11-xbitmaps \
            xterm \
-           zlib-devel
+           zlib-devel \
+           zsh
 
 %post
     # Yum
@@ -180,3 +183,4 @@
 
     # Misc
     rm -f /etc/passwd /etc/passwd- /etc/shadow /etc/shadow- /etc/group /etc/group- /etc/gshadow /etc/gshadow-
+    chmod 750 /root
