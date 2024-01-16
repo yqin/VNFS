@@ -15,10 +15,10 @@
 
     # CUDA
     wget -O /etc/yum.repos.d/cuda-rhel9.repo https://developer.download.nvidia.com/compute/cuda/repos/rhel9/${KERNEL_ARCH}/cuda-rhel9.repo
-    dnf -y install \
+    dnf -y --nobest install \
            cuda-drivers \
            dkms \
-           kmod-nvidia-latest-dkms
+           kmod-nvidia-open-dkms
 
     # Build CUDA Driver
     dkms autoinstall -k ${KVERSION}
