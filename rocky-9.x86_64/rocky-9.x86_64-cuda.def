@@ -37,6 +37,7 @@
     CUDA=/tmp/cuda ./build-rpm-packages.sh
     dnf -y install \
            gdrcopy-${GDRCOPY_VER}-1.el9.${KERNEL_ARCH}.rpm \
+           gdrcopy-devel-${GDRCOPY_VER}-1.el9.noarch.rpm \
            gdrcopy-kmod-${GDRCOPY_VER}-1dkms.el9.noarch.rpm
     cd /tmp
     rm -rf gdrcopy-${GDRCOPY_VER} v${GDRCOPY_VER}.tar.gz
