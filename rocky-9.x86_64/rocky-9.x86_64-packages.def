@@ -144,6 +144,7 @@
            perl-XML-LibXML \
            perl-XML-Parser \
            perl-utils \
+           pinentry \
            pixman-devel \
            platform-python \
            platform-python-devel \
